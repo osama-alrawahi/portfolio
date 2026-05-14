@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Osama Al-Rawahi – CV</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../static/style.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0B2545;
+    --teal: #107860;
+    --teal-light: #E8F4F0;
+    --text: #1C1C2E;
+    --muted: #5A607A;
+    --border: #D8DDE8;
+    --bg: #FFFFFF;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13.5px;
+    color: var(--text);
+    background: #F0F2F5;
+    line-height: 1.6;
+  }
+
+  .page {
+    max-width: 860px;
+    margin: 40px auto;
+    background: var(--bg);
+    box-shadow: 0 4px 32px rgba(0,0,0,0.12);
+  }
+
+  .header {
+    background: var(--navy);
+    padding: 44px 52px 36px;
+    color: white;
+  }
+
+  .header-name {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: #FFFFFF;
+    margin-bottom: 4px;
+  }
+
+  .header-title {
+    font-size: 14px;
+    font-weight: 400;
+    color: #8FBCB0;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .contact-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 20px;
+    margin-top: 16px;
+  }
+
+  .contact-item {
+    font-size: 12.5px;
+    color: #A8C5C0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    text-decoration: none;
+  }
+
+  .contact-item:hover { color: #FFFFFF; }
+
+  .contact-dot {
+    width: 3px; height: 3px;
+    border-radius: 50%;
+    background: #4A7A70;
+    display: inline-block;
+  }
+
+  .body {
+    padding: 36px 52px 48px;
+  }
+
+  .section {
+    margin-bottom: 28px;
+  }
+
+  .section-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--teal);
+    border-bottom: 1.5px solid var(--teal);
+    padding-bottom: 5px;
+    margin-bottom: 14px;
+  }
+
+  .summary-text {
+    font-size: 13.5px;
+    line-height: 1.75;
+    color: var(--text);
+  }
+
+  .entry {
+    margin-bottom: 18px;
+  }
+
+  .entry:last-child { margin-bottom: 0; }
+
+  .entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 2px;
+  }
+
+  .entry-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--navy);
+    line-height: 1.4;
+  }
+
+  .entry-org {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--teal);
+    margin-bottom: 2px;
+  }
+
+  .entry-meta {
+    font-size: 11.5px;
+    color: var(--muted);
+    white-space: nowrap;
+    font-weight: 500;
+  }
+
+  .entry-sub {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  ul.bullets {
+    padding-left: 16px;
+    margin-top: 5px;
+  }
+
+  ul.bullets li {
+    font-size: 13px;
+    line-height: 1.65;
+    margin-bottom: 3px;
+    color: var(--text);
+  }
+
+  ul.bullets li::marker {
+    color: var(--teal);
+  }
+
+  .tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 7px;
+  }
+
+  .tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 10.5px;
+    background: var(--teal-light);
+    color: var(--teal);
+    border-radius: 3px;
+    padding: 2px 7px;
+    font-weight: 400;
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 10.5px;
+    font-weight: 600;
+    background: #FFF3CD;
+    color: #856404;
+    border-radius: 3px;
+    padding: 1px 6px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  .badge.place1 { background: #D4EDDA; color: #155724; }
+  .badge.place3 { background: #FFF3CD; color: #856404; }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 32px;
+  }
+
+  .skill-row {
+    display: flex;
+    gap: 0;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .skill-label {
+    font-weight: 600;
+    color: var(--navy);
+    min-width: 140px;
+    flex-shrink: 0;
+  }
+
+  .skill-value {
+    color: var(--text);
+  }
+
+  .cert-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 13px;
+    padding: 5px 0;
+    border-bottom: 0.5px solid var(--border);
+    gap: 12px;
+  }
+
+  .cert-item:last-child { border-bottom: none; }
+
+  .cert-name {
+    color: var(--text);
+    font-weight: 500;
+    flex: 1;
+  }
+
+  .cert-org {
+    font-size: 11.5px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .activity-item {
+    font-size: 13px;
+    padding: 4px 0;
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+  }
+
+  .activity-item::before {
+    content: "▸";
+    color: var(--teal);
+    font-size: 10px;
+    flex-shrink: 0;
+  }
+
+  .activity-role {
+    font-weight: 600;
+    color: var(--navy);
+  }
+
+  .workshop-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 5px 16px;
+  }
+
+  .workshop-item {
+    font-size: 12px;
+    color: var(--muted);
+    padding: 3px 0;
+    display: flex;
+    gap: 5px;
+    align-items: baseline;
+  }
+
+  .workshop-item::before {
+    content: "–";
+    color: var(--teal);
+    flex-shrink: 0;
+  }
+
+  a { color: inherit; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .link-teal { color: var(--teal); font-size: 12px; }
+
+  @media print {
+    body { background: white; }
+    .page { margin: 0; box-shadow: none; max-width: 100%; }
+    .header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    nav { display: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav style="background: var(--navy); padding: 12px 0; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+  <div style="max-width: 860px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center;">
+    <a href="../index.html" style="color: white; font-weight: 700; font-size: 18px; text-decoration: none;">Osama Al-Rawahi</a>
+    <div style="display: flex; gap: 20px;">
+      <a href="../index.html" style="color: #A8C5C0; font-size: 13px; text-decoration: none;">Home</a>
+      <a href="cv.html" style="color: var(--teal); font-size: 13px; text-decoration: none; font-weight: 600;">CV</a>
+      <a href="projects.html" style="color: #A8C5C0; font-size: 13px; text-decoration: none;">Projects</a>
+      <a href="certificates.html" style="color: #A8C5C0; font-size: 13px; text-decoration: none;">Certificates</a>
+      <a href="gallery.html" style="color: #A8C5C0; font-size: 13px; text-decoration: none;">Gallery</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page">
+  <div class="header">
+    <div class="header-name">Osama Al-Rawahi</div>
+    <div class="header-title">Computer Science – Intelligent Systems & Data Science · AI · Robotics & IoT</div>
+
+    <div class="contact-row">
+      <a class="contact-item" href="tel:+96871112393">+968 71112393</a>
+      <span class="contact-dot"></span>
+      <a class="contact-item" href="mailto:s13234@squ.edu.om">s13234@squ.edu.om</a>
+      <span class="contact-dot"></span>
+      <span class="contact-item">Nizwa, Oman</span>
+      <span class="contact-dot"></span>
+      <a class="contact-item" href="https://github.com/osama-alrawahi" target="_blank">github.com/osama-alrawahi</a>
+      <span class="contact-dot"></span>
+      <a class="contact-item" href="https://www.linkedin.com/in/osama-al-rawahi-06651a287" target="_blank">linkedin.com/in/osama-al-rawahi</a>
+    </div>
+  </div>
+
+  <div class="body">
+    <div class="section">
+      <div class="section-title">Professional Summary</div>
+      <p class="summary-text">
+        Final-year Computer Science student (Intelligent Systems & Data Science) at Sultan Qaboos University with hands-on expertise in Artificial Intelligence, Machine Learning, Computer Vision, Robotics, and IoT systems. Experienced in designing and deploying real-time AI applications, autonomous mobile robots, and embedded systems using Python, PyTorch, and Arduino. National competition winner — 1st place in AI Drone and C++ Programming, 3rd place in 100 Arab Innovators. Leader of SQU's Free and Open-Source Society (FO3S) and active member of the Omani Inventors Union. Passionate about building intelligent, impactful systems at the intersection of AI, data science, hardware, and real-world deployment.
+      </p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Education</div>
+      <div class="entry">
+        <div class="entry-header">
+          <div>
+            <div class="entry-title">Bachelor of Science – Computer Science, Intelligent Systems & Data Science</div>
+            <div class="entry-org">Sultan Qaboos University (SQU), Seeb, Oman</div>
+          </div>
+          <div class="entry-meta">Expected 2026</div>
+        </div>
+        <div class="entry-sub">Relevant Coursework: Algorithms & Data Structures · Machine Learning & AI · Data Science · Operating Systems · Embedded Systems · Software Engineering · Web Development · Mobile Robotics · Smart Systems · Database Systems</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Work Experience</div>
+      <div class="entry">
+        <div class="entry-header">
+          <div>
+            <div class="entry-title">AI & Drone Instructor</div>
+            <div class="entry-org">Oman AI Drone Competition – 3rd Edition · Makeen, SQU, MOI</div>
+          </div>
+          <div class="entry-meta">Oct 2024</div>
+        </div>
+        <ul class="bullets">
+          <li>Designed and delivered technical training sessions on AI integration for autonomous drone systems for competition participants</li>
+          <li>Mentored teams in implementing machine learning algorithms for drone path planning and real-time decision-making</li>
+          <li>Evaluated participant projects and provided structured technical feedback throughout the competition program</li>
+          <li>Coordinated with organizers from Makeen, SQU, and the Ministry of Interior (MOI) on curriculum structure and session scheduling</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Projects</div>
+      
+      <div class="entry">
+        <div class="entry-header">
+          <div>
+            <div class="entry-title">JISSR-OM — Omani Sign Language Recognition & Translation System
+              <span class="badge place1">Final Year Project</span>
+            </div>
+            <div class="entry-org">ML Engineer & Backend Developer <span style="font-weight:400; color:#5A607A; font-size:12px;">· Team of 4</span></div>
+          </div>
+          <div class="entry-meta">2024 – 2025</div>
+        </div>
+        <ul class="bullets">
+          <li>Built a real-time web application that captures live video and translates Omani Sign Language (OSL) gestures into Arabic text at the sentence level — not just isolated words</li>
+          <li>Integrated UniSign (transformer-based model) with RTMPose/RTMLib for whole-body pose estimation; processed video frames using OpenCV and Pillow with NumPy landmark handling</li>
+          <li>Developed Python/Flask backend with Flask-SocketIO for low-latency streaming; enabled CUDA GPU acceleration for PyTorch inference</li>
+          <li>Implemented avatar animation feature for reverse sign-to-video playback; built HTML/CSS/JavaScript frontend UI</li>
+        </ul>
+        <div class="tag-row">
+          <span class="tag">Python</span><span class="tag">PyTorch</span><span class="tag">Transformer</span><span class="tag">Computer Vision</span><span class="tag">Flask</span><span class="tag">RTMPose</span><span class="tag">OpenCV</span><span class="tag">CUDA</span><span class="tag">Real-time AI</span>
+        </div>
+        <div style="margin-top:6px;">
+          <a class="link-teal" href="https://github.com/osama-alrawahi/JSSIR-OM" target="_blank">↗ github.com/osama-alrawahi/JSSIR-OM</a>
+        </div>
+      </div>
+
+      <div class="entry">
+        <div class="entry-header">
+          <div>
+            <div class="entry-title">Mapping-Based Navigation — ANN-Controlled Mobile Robot</div>
+            <div class="entry-org">Robotics & Algorithm Developer <span style="font-weight:400; color:#5A607A; font-size:12px;">· Team of 9 · Course: Introduction to Mobile Robotics</span></div>
+          </div>
+          <div class="entry-meta">2024</div>
+        </div>
+        <ul class="bullets">
+          <li>Designed a physical mobile robot using an Artificial Neural Network (ANN) for camera-based environment scanning and real-time 8×8 grid map construction</li>
+          <li>Implemented Dijkstra's algorithm and A* (Manhattan heuristic) for optimal path planning; A* consistently outperformed Dijkstra's in navigation speed</li>
+          <li>Programmed real-time obstacle avoidance using proximity sensors (15 cm trigger zone) with 90° reactive avoidance maneuvers</li>
+          <li>Achieved >90% path completion accuracy in controlled indoor testing; findings published as a formal academic report</li>
+        </ul>
+        <div class="tag-row">
+          <span class="tag">Arduino (C/C++)</span><span class="tag">ANN</span><span class="tag">A* Algorithm</span><span class="tag">Dijkstra's</span><span class="tag">Robotics</span><span class="tag">Embedded Systems</span><span class="tag">Path Planning</span>
+        </div>
+      </div>
+
+      <div class="entry">
+        <div class="entry-header">
+          <div>
+            <div class="entry-title">Green Balance — Oil Detection & Bio-Response Maritime System
+              <span class="badge place3">Rubban Hackathon · 3rd Place</span>
+            </div>
+            <div class="entry-org">Lead Frontend Developer <span style="font-weight:400; color:#5A607A; font-size:12px;">· Team of 5</span></div>
+          </div>
+          <div class="entry-meta">2024</div>
+        </div>
+        <ul class="bullets">
+          <li>Built a smart maritime monitoring dashboard for Sohar Port that detects oil-leaking vessels and autonomously deploys oil-eating bacteria from sea floats</li>
+          <li>Implemented drone automation to autonomously restock bacteria floats when supplies run low — creating a fully closed-loop bio-remediation response system</li>
+          <li>Developed GPS-based real-time ship tracking using Leaflet.js with color-coded status for all entities (floats, ships, drones) and a full reporting system</li>
+        </ul>
+        <div class="tag-row">
+          <span class="tag">JavaScript</span><span class="tag">Leaflet.js</span><span class="tag">IoT Simulation</span><span class="tag">Drone Systems</span><span class="tag">Real-time Dashboard</span>
+        </div>
+      </div>
+
+      <div class="entry">
+        <div class="entry-header">
+          <div>
+            <div class="entry-title">Luqma (لُقمة) — National Platform for Sustainable Food & Local Shopping</div>
+            <div class="entry-org">Full-Stack Developer <span style="font-weight:400; color:#5A607A; font-size:12px;">· Team of 3 · Competition submission</span></div>
+          </div>
+          <div class="entry-meta">2024</div>
+        </div>
+        <ul class="bullets">
+          <li>Developed an Arabic-language RTL web platform combating food waste in Oman via local farm discovery, smart fridge freshness tracking, and AI-driven recipe suggestions for expiring ingredients</li>
+          <li>Built gamification layer with leaderboard, daily food-waste challenges, and mini-games to drive engagement; integrated Leaflet.js for live map of local farms and markets</li>
+        </ul>
+        <div class="tag-row">
+          <span class="tag">HTML/CSS/JS</span><span class="tag">Leaflet.js</span><span class="tag">Arabic RTL</span><span class="tag">Gamification</span>
+        </div>
+      </div>
+
+      <div class="entry">
+        <div class="entry-header">
+          <div>
+            <div class="entry-title">Calisthenics RPG — Gamified Skill Tree Progression System
+              <span style="font-size:11.5px; color:#5A607A; font-weight:400;">· In Development</span>
+            </div>
+            <div class="entry-org">Solo Project</div>
+          </div>
+          <div class="entry-meta">2024 – Present</div>
+        </div>
+        <ul class="bullets">
+          <li>Building an Arabic-language web app that turns calisthenics training into an RPG-style skill tree with 100+ ranked exercises (Tier 0–100) across Push, Pull, Core, and Legs categories</li>
+          <li>Features SVG body map for muscle activation visualization, modular exercise database, and full RTL Arabic UI with a dark neon glassmorphism aesthetic</li>
+        </ul>
+        <div class="tag-row">
+          <span class="tag">HTML/CSS/JS</span><span class="tag">SVG</span><span class="tag">Arabic RTL</span><span class="tag">UI/UX</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Technical Skills</div>
+      <div class="skills-grid">
+        <div class="skill-row">
+          <span class="skill-label">Languages</span>
+          <span class="skill-value">Python, C/C++, Java, Assembly, Visual Basic (VB)</span>
+        </div>
+        <div class="skill-row">
+          <span class="skill-label">AI / ML / Data</span>
+          <span class="skill-value">PyTorch, Deep Learning, ANN, Transformer Models, Computer Vision, Data Science</span>
+        </div>
+        <div class="skill-row">
+          <span class="skill-label">Robotics & Embedded</span>
+          <span class="skill-value">Arduino, Raspberry Pi, PLC, Servo Motors, Proximity Sensors</span>
+        </div>
+        <div class="skill-row">
+          <span class="skill-label">Algorithms</span>
+          <span class="skill-value">A*, Dijkstra's, Path Planning, Algorithm Design, Debugging</span>
+        </div>
+        <div class="skill-row">
+          <span class="skill-label">Web / Backend</span>
+          <span class="skill-value">Flask, Flask-SocketIO, HTML, CSS, JavaScript, Leaflet.js</span>
+        </div>
+        <div class="skill-row">
+          <span class="skill-label">Libraries & Tools</span>
+          <span class="skill-value">OpenCV, NumPy, Pillow, CUDA, RTMPose, Git</span>
+        </div>
+        <div class="skill-row">
+          <span class="skill-label">Systems</span>
+          <span class="skill-value">IoT, Embedded Systems, System Design, Linux, Operating Systems</span>
+        </div>
+        <div class="skill-row">
+          <span class="skill-label">Spoken Languages</span>
+          <span class="skill-value">Arabic (Native) · English (Fluent)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Certifications & Achievements</div>
+
+      <div class="cert-item">
+        <span class="cert-name">AI Drone Competition <span class="badge place1">1st Place – AI</span> <span class="badge place3">3rd Place – RC</span></span>
+        <span class="cert-org">Makeen · SQU · MOI · Oct 2024</span>
+      </div>
+      <div class="cert-item">
+        <span class="cert-name">Sumo Robot Competition <span class="badge place1">Qualified</span></span>
+        <span class="cert-org">MCTE · SQU · Apr 2024</span>
+      </div>
+      <div class="cert-item">
+        <span class="cert-name">Rubban Hackathon <span class="badge place3">3rd Place</span></span>
+        <span class="cert-org">MOI · 2024</span>
+      </div>
+      <div class="cert-item">
+        <span class="cert-name">SAS Hackathon – Rubban</span>
+        <span class="cert-org">MOI · May 2024</span>
+      </div>
+      <div class="cert-item">
+        <span class="cert-name">100 Arab Innovators <span class="badge place3">3rd Place</span></span>
+        <span class="cert-org">North Sharqiyah Governorate · 2018</span>
+      </div>
+      <div class="cert-item">
+        <span class="cert-name">Programming C++ <span class="badge place1">1st Place</span></span>
+        <span class="cert-org">Code Academy · SQU · 2018</span>
+      </div>
+      <div class="cert-item">
+        <span class="cert-name">Programming and Robot</span>
+        <span class="cert-org">Engineering Society · SQU · 2018</span>
+      </div>
+      <div class="cert-item">
+        <span class="cert-name">Python Skills</span>
+        <span class="cert-org">Firetech · 2020</span>
+      </div>
+      <div class="cert-item">
+        <span class="cert-name">Arduino Robots</span>
+        <span class="cert-org">Engineering Village · 2021</span>
+      </div>
+
+      <div style="margin-top: 14px; margin-bottom: 6px; font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted);">Workshops Attended</div>
+      <div class="workshop-grid">
+        <div class="workshop-item">PLC Programming · SQU COE IEEE (Oct 2024)</div>
+        <div class="workshop-item">IoT Systems · Engineering Village (Oct 2024)</div>
+        <div class="workshop-item">Linux · SQU CIRC FO3S (Nov 2024)</div>
+        <div class="workshop-item">Raspberry Pi · SQU CIRC FO3S (Nov 2023)</div>
+        <div class="workshop-item">Automation · SQU ILC (Mar 2023)</div>
+        <div class="workshop-item">Blockchain & Crypto · SQU ES (Nov 2021)</div>
+        <div class="workshop-item">Arduino Robots · SQU MCTE (2021)</div>
+        <div class="workshop-item">C++ Programming · SQU CodeAcademy (Aug 2018)</div>
+        <div class="workshop-item">Python · Firetech (Apr 2020)</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Extracurricular Activities</div>
+      <div class="activity-item">
+        <span><span class="activity-role">Leader</span> — Free and Open-Source Society (FO3S) · Sultan Qaboos University</span>
+      </div>
+      <div class="activity-item">
+        <span><span class="activity-role">Member</span> — Omani Inventors Union</span>
+      </div>
+      <div class="activity-item">
+        <span><span class="activity-role">Member</span> — Computer Science Group · SQU</span>
+      </div>
+      <div class="activity-item">
+        <span><span class="activity-role">Volunteer</span> — Mechatronics Engineering Society · SQU</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="../static/utils.js"></script>
+</body>
+</html>

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Osama Al-Rawahi | Portfolio</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="static/style.css">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Space Grotesk', 'sans-serif'], arabic: ['Cairo', 'sans-serif'] },
+                    colors: {
+                        space: { 900:'#0B0D17', 800:'#151932', accent:'#00F0FF', nebula:'#7000FF' },
+                        lab: { 100:'#F3F4F6', accent:'#F97316' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="text-gray-300 antialiased overflow-x-hidden">
+    <div id="canvas-container">
+        <canvas id="starfield-canvas"></canvas>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass transition-all duration-300">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <a href="index.html" class="text-2xl font-bold tracking-tighter hover:text-space-accent transition-colors">
+                    <span class="text-white">Osama</span> <span class="text-space-accent">Al-Rawahi</span>
+                </a>
+                
+                <div class="hidden md:flex gap-6">
+                    <a href="index.html" class="text-space-accent">Home</a>
+                    <a href="template/cv.html" class="hover:text-space-accent transition">CV</a>
+                    <a href="template/projects.html" class="hover:text-space-accent transition">Projects</a>
+                    <a href="template/certificates.html" class="hover:text-space-accent transition">Certificates</a>
+                    <a href="template/gallery.html" class="hover:text-space-accent transition">Gallery</a>
+                </div>
+
+                <button id="mobileMenuBtn" class="md:hidden text-white">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="hidden md:hidden mt-4 pb-4 space-y-2">
+                <a href="index.html" class="block py-2 text-space-accent">Home</a>
+                <a href="template/cv.html" class="block py-2 hover:text-space-accent transition">CV</a>
+                <a href="template/projects.html" class="block py-2 hover:text-space-accent transition">Projects</a>
+                <a href="template/certificates.html" class="block py-2 hover:text-space-accent transition">Certificates</a>
+                <a href="template/gallery.html" class="block py-2 hover:text-space-accent transition">Gallery</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <main class="pt-32 pb-20">
+        <section class="container mx-auto px-6">
+            <div class="max-w-6xl mx-auto">
+                <div class="grid md:grid-cols-2 gap-12 items-center reveal">
+                    <!-- Left: Avatar -->
+                    <div class="order-2 md:order-1">
+                        <div class="avatar-container">
+                            <div class="avatar-ring"></div>
+                            <div class="avatar-inner">
+                                <!-- Profile images auto-loaded from images/profile/ -->
+                                <div class="avatar-fallback">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Social Links -->
+                        <div class="flex justify-center gap-6 text-gray-400 mt-8">
+                            <a href="mailto:s13234@squ.edu.om" class="hover:text-space-accent transition" title="Email">
+                                <i class="fas fa-envelope text-2xl"></i>
+                            </a>
+                            <a href="https://github.com/osama-alrawahi" target="_blank" class="hover:text-space-accent transition" title="GitHub">
+                                <i class="fab fa-github text-2xl"></i>
+                            </a>
+                            <a href="https://linkedin.com/in/osama-al-rawahi-06651a287" target="_blank" class="hover:text-space-accent transition" title="LinkedIn">
+                                <i class="fab fa-linkedin text-2xl"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Right: Info -->
+                    <div class="order-1 md:order-2">
+                        <div class="inline-block px-4 py-2 border border-space-accent rounded-full text-space-accent text-sm font-mono mb-6">
+                            <span class="animate-pulse">●</span> Final Year Student · Available for Opportunities
+                        </div>
+                        
+                        <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">
+                            Osama Al-Rawahi
+                        </h1>
+                        
+                        <h2 class="text-2xl md:text-3xl font-semibold text-space-accent mb-6">
+                            Computer Science Student
+                        </h2>
+
+                        <p class="text-lg text-gray-400 mb-4">
+                            <span class="text-white font-semibold">Intelligent Systems & Data Science</span> · Sultan Qaboos University
+                        </p>
+                        
+                        <p class="text-gray-400 mb-8 leading-relaxed">
+                            Specializing in <span class="text-space-accent">AI</span>, <span class="text-space-accent">Machine Learning</span>, <span class="text-space-accent">Computer Vision</span>, <span class="text-space-accent">Robotics</span>, and <span class="text-space-accent">IoT</span>. National competition winner with hands-on experience in real-time AI applications, autonomous systems, and embedded hardware.
+                        </p>
+
+                        <div class="flex flex-wrap gap-4">
+                            <a href="template/cv.html" class="px-6 py-3 bg-space-accent text-black font-bold rounded-lg hover:bg-opacity-90 transition flex items-center gap-2">
+                                <i class="fas fa-file-pdf"></i> View Full CV
+                            </a>
+                            <a href="template/projects.html" class="px-6 py-3 border border-space-accent text-space-accent font-bold rounded-lg hover:bg-space-accent hover:text-black transition flex items-center gap-2">
+                                <i class="fas fa-code"></i> Explore Projects
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Stats -->
+        <section class="container mx-auto px-6 mt-20">
+            <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="glass tech-border rounded-xl p-6 text-center reveal">
+                    <div class="text-4xl font-bold text-space-accent mb-2" id="projectCount">5+</div>
+                    <div class="text-gray-400 text-sm">Major Projects</div>
+                </div>
+                <div class="glass tech-border rounded-xl p-6 text-center reveal">
+                    <div class="text-4xl font-bold text-space-accent mb-2" id="certCount">77</div>
+                    <div class="text-gray-400 text-sm">Certificates</div>
+                </div>
+                <div class="glass tech-border rounded-xl p-6 text-center reveal">
+                    <div class="text-4xl font-bold text-space-accent mb-2">10+</div>
+                    <div class="text-gray-400 text-sm">Competitions</div>
+                </div>
+                <div class="glass tech-border rounded-xl p-6 text-center reveal">
+                    <div class="text-4xl font-bold text-space-accent mb-2">3</div>
+                    <div class="text-gray-400 text-sm">Work Experience</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Projects (loaded from data) -->
+        <section class="container mx-auto px-6 mt-20">
+            <div class="max-w-6xl mx-auto">
+                <div class="flex justify-between items-center mb-8 reveal">
+                    <div>
+                        <h2 class="text-3xl font-bold text-white mb-2">Featured Projects</h2>
+                        <p class="text-gray-400">Building intelligent, impactful systems</p>
+                    </div>
+                    <a href="template/projects.html" class="text-space-accent hover:underline flex items-center gap-2">
+                        View All <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div id="featuredProjects" class="grid md:grid-cols-2 gap-6">
+                    <!-- Projects loaded dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Achievements (loaded from certificates data) -->
+        <section class="container mx-auto px-6 mt-20">
+            <div class="max-w-6xl mx-auto">
+                <div class="flex justify-between items-center mb-8 reveal">
+                    <div>
+                        <h2 class="text-3xl font-bold text-white mb-2">Recent Achievements</h2>
+                        <p class="text-gray-400">Competition wins and certifications</p>
+                    </div>
+                    <a href="template/certificates.html" class="text-space-accent hover:underline flex items-center gap-2">
+                        View All <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div id="recentAchievements" class="grid md:grid-cols-3 gap-6">
+                    <!-- Achievements loaded dynamically -->
+                </div>
+
+                <!-- Certificate Categories -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+                    <div class="glass rounded-lg p-4 text-center reveal">
+                        <div class="text-2xl font-bold text-space-accent mb-1">20+</div>
+                        <div class="text-gray-400 text-sm">Workshops</div>
+                    </div>
+                    <div class="glass rounded-lg p-4 text-center reveal">
+                        <div class="text-2xl font-bold text-space-accent mb-1">15+</div>
+                        <div class="text-gray-400 text-sm">Competitions</div>
+                    </div>
+                    <div class="glass rounded-lg p-4 text-center reveal">
+                        <div class="text-2xl font-bold text-space-accent mb-1">25+</div>
+                        <div class="text-gray-400 text-sm">Events</div>
+                    </div>
+                    <div class="glass rounded-lg p-4 text-center reveal">
+                        <div class="text-2xl font-bold text-space-accent mb-1">17+</div>
+                        <div class="text-gray-400 text-sm">Academic</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Overview -->
+        <section class="container mx-auto px-6 mt-20">
+            <div class="max-w-6xl mx-auto glass tech-border rounded-2xl p-8 reveal">
+                <h2 class="text-3xl font-bold text-white mb-6 text-center">Technical Expertise</h2>
+                
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div>
+                        <h4 class="text-space-accent font-semibold mb-3 flex items-center gap-2">
+                            <i class="fas fa-brain"></i> AI & Machine Learning
+                        </h4>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 bg-white/5 rounded text-sm">PyTorch</span>
+                            <span class="px-3 py-1 bg-white/5 rounded text-sm">Deep Learning</span>
+                            <span class="px-3 py-1 bg-white/5 rounded text-sm">Computer Vision</span>
+                            <span class="px-3 py-1 bg-white/5 rounded text-sm">Transformers</span>
+                            <span class="px-3 py-1 bg-white/5 rounded text-sm">ANN</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="text-space-accent font-semibold mb-3 flex items-center gap-2">
+                            <i class="fas fa-microchip"></i> Robotics & IoT
+                        </h4>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 bg-white/5 rounded text-sm">Arduino</span>
+                            <span class="px-3 py-1 bg-white/5 rounded text-sm">Raspberry Pi</span>
+                            <span class="px-3 py-1 bg-white/5 rounded text-sm">PLC</span>
+                            <span class="px-3 py-1 bg-white/5 rounded text-sm">Sensors</span>
+                            <span class="px-3 py-1 bg-white/5 rounded text-sm">Embedded</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="text-space-accent font-semibold mb-3 flex items-center gap-2">
+                            <i class="fas fa-code"></i> Development
+                        </h4>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 bg-white/5 rounded text-sm">Python</span>
+                            <span class="px-3 py-1 bg-white/5 rounded text-sm">C/C++</span>
+                            <span class="px-3 py-1 bg-white/5 rounded text-sm">JavaScript</span>
+                            <span class="px-3 py-1 bg-white/5 rounded text-sm">Flask</span>
+                            <span class="px-3 py-1 bg-white/5 rounded text-sm">Git</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="container mx-auto px-6 mt-20 mb-10">
+            <div class="max-w-4xl mx-auto glass tech-border rounded-2xl p-12 text-center reveal">
+                <h2 class="text-3xl font-bold text-white mb-4">Let's Build Something Amazing</h2>
+                <p class="text-gray-400 mb-8 max-w-2xl mx-auto">
+                    I'm actively seeking opportunities in AI, robotics, and full-stack development. 
+                    Whether it's research collaboration, internships, or exciting projects — let's connect!
+                </p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="mailto:s13234@squ.edu.om" class="px-8 py-4 bg-space-accent text-black font-bold rounded-lg hover:bg-opacity-90 transition flex items-center gap-2">
+                        <i class="fas fa-envelope"></i> Get in Touch
+                    </a>
+                    <a href="template/cv.html" class="px-8 py-4 border border-space-accent text-space-accent font-bold rounded-lg hover:bg-space-accent hover:text-black transition flex items-center gap-2">
+                        <i class="fas fa-file-pdf"></i> View CV
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Load Data -->
+    <script src="data/projects.js"></script>
+    <script src="data/certificates.js"></script>
+    <script src="data/profile.js"></script>
+    
+    <!-- Utilities -->
+    <script src="static/utils.js"></script>
+    
+    <!-- Page-specific Logic -->
+    <script>
+        // Load featured projects
+        function loadFeaturedProjects() {
+            const container = document.getElementById('featuredProjects');
+            if (!container || !PROJECTS) return;
+
+            const featuredProjects = PROJECTS.filter(project => project.featured === true).slice(0, 2);
+
+            // Show projects
+            featuredProjects.forEach(project => {
+                const badgeColors = {
+                    green: 'bg-green-500/20 text-green-400',
+                    purple: 'bg-purple-500/20 text-purple-400',
+                    yellow: 'bg-yellow-500/20 text-yellow-400',
+                    blue: 'bg-blue-500/20 text-blue-400',
+                    gray: 'bg-gray-500/20 text-gray-400'
+                };
+                
+                const card = `
+                    <div class="glass tech-border rounded-xl p-6 project-card reveal">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="bg-space-accent/10 p-3 rounded-lg">
+                                <i class="${project.icon} text-space-accent text-2xl"></i>
+                            </div>
+                            <span class="text-xs text-gray-500">${new Date(project.date).getFullYear()}</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2">${project.title}</h3>
+                        ${project.badge ? `<span class="inline-block px-2 py-1 ${badgeColors[project.badgeColor]} rounded text-xs mb-3">${project.badge}</span>` : ''}
+                        <p class="text-gray-400 text-sm mb-4">${project.description.substring(0, 150)}...</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            ${project.stack.slice(0, 4).map(tech => `<span class="px-2 py-1 bg-space-accent/10 text-space-accent rounded text-xs">${tech}</span>`).join('')}
+                        </div>
+                        ${project.codeUrl && project.codeUrl !== '#' ? `<a href="${project.codeUrl}" target="_blank" class="text-space-accent hover:underline text-sm flex items-center gap-2"><i class="fab fa-github"></i> View on GitHub</a>` : ''}
+                    </div>
+                `;
+                container.innerHTML += card;
+            });
+        }
+        
+        // Load recent achievements
+        function loadRecentAchievements() {
+            const container = document.getElementById('recentAchievements');
+            if (!container || !CERTIFICATES) return;
+            
+            const FEATURED_CERTIFICATE_IDS = [2, 12, 76];
+            const FEATURED_achievements = CERTIFICATES.filter(cert => FEATURED_CERTIFICATE_IDS.includes(cert.id));
+
+            // Get competition/achievement certificates
+            const achievements = CERTIFICATES
+                .filter(cert => cert.tags.some(tag => ['Competition', 'Hackathon', 'AI', 'Drone'].includes(tag)))
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .slice(0, 3);
+            
+            const badgeMap = {
+                'AI Drone Competition': { badge: '1st & 3rd Place', class: 'gold', icon: 'trophy' },
+                'Rubban Hackathon': { badge: '3rd Place', class: 'bronze', icon: 'medal' },
+                'C++ Workshop - 1st Place': { badge: '1st Place', class: 'gold', icon: 'trophy' }
+            };
+            
+            FEATURED_achievements.forEach(cert => {
+                const info = badgeMap[cert.title] || { badge: 'Award', class: 'silver', icon: 'award' };
+                
+                const card = `
+                    <div class="glass tech-border rounded-xl p-6 reveal">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="bg-${info.class === 'gold' ? 'yellow' : info.class === 'bronze' ? 'orange' : 'gray'}-500/20 p-3 rounded-lg">
+                                <i class="fas fa-${info.icon} text-${info.class === 'gold' ? 'yellow' : info.class === 'bronze' ? 'orange' : 'gray'}-400 text-xl"></i>
+                            </div>
+                            <span class="cert-badge ${info.class}">${info.badge}</span>
+                        </div>
+                        <h4 class="font-bold text-white mb-2">${cert.title.replace(' - 1st Place', '')}</h4>
+                        <p class="text-gray-400 text-sm mb-2">${cert.organization}</p>
+                        <p class="text-xs text-gray-500">${new Date(cert.date).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</p>
+                    </div>
+                `;
+                container.innerHTML += card;
+            });
+        }
+        
+        // Update counts
+        if (PROJECTS) document.getElementById('projectCount').textContent = PROJECTS.length + '+';
+        if (CERTIFICATES) document.getElementById('certCount').textContent = CERTIFICATES.length;
+        
+        // Load content
+        loadFeaturedProjects();
+        loadRecentAchievements();
+    </script>
+</body>
+</html>

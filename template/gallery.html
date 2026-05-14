@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gallery | Osama Al-Rawahi</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Space Grotesk', 'sans-serif'], arabic: ['Cairo', 'sans-serif'] },
+          colors: {
+            space: { 900:'#0B0D17', 800:'#151932', accent:'#00F0FF', nebula:'#7000FF' },
+            lab: { 100:'#F3F4F6', accent:'#F97316' }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Load external stylesheets -->
+  <link rel="stylesheet" href="../static/style.css">
+</head>
+
+<body class="bg-[#0B0D17] text-gray-300 antialiased overflow-x-hidden">
+  
+  <canvas id="canvas-container"></canvas>
+
+  <nav class="fixed w-full z-50 glass transition-all duration-300">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="../index.html" class="text-2xl font-bold tracking-tighter hover:text-space-accent transition-colors flex items-center gap-2">
+        <i class="fa-solid fa-images text-space-accent"></i>
+        <span class="text-white">Osama Al-Rawahi</span>
+      </a>
+
+      <div class="hidden md:flex gap-6">
+        <a href="../index.html" class="hover:text-space-accent transition">Home</a>
+        <a href="cv.html" class="hover:text-space-accent transition">CV</a>
+        <a href="projects.html" class="hover:text-space-accent transition">Projects</a>
+        <a href="certificates.html" class="hover:text-space-accent transition">Certificates</a>
+        <a href="gallery.html" class="text-space-accent">Gallery</a>
+      </div>
+
+      <button id="mobileMenuBtn" class="md:hidden text-white">
+        <i class="fas fa-bars text-xl"></i>
+      </button>
+    </div>
+
+    <div id="mobileMenu" class="hidden md:hidden mt-4 pb-4 space-y-2 px-6">
+      <a href="../index.html" class="block py-2 hover:text-space-accent transition">Home</a>
+      <a href="cv.html" class="block py-2 hover:text-space-accent transition">CV</a>
+      <a href="projects.html" class="block py-2 hover:text-space-accent transition">Projects</a>
+      <a href="certificates.html" class="block py-2 hover:text-space-accent transition">Certificates</a>
+      <a href="gallery.html" class="block py-2 text-space-accent">Gallery</a>
+    </div>
+  </nav>
+
+  <main id="top" class="pt-28 pb-20">
+    <section class="container mx-auto px-6">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-10">
+          <div class="inline-block px-3 py-1 border border-space-accent rounded-full text-space-accent text-sm font-mono mb-3">
+            <span class="animate-pulse">●</span> <span>Portfolio / Gallery</span>
+          </div>
+          <h1 class="text-4xl md:text-5xl font-bold text-white">
+            Visual Journey <span class="text-space-accent">/</span> Gallery
+          </h1>
+          <p class="mt-3 text-gray-400">
+            A visual showcase of projects, competitions, workshops, and achievements throughout my journey.
+          </p>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="glass tech-border rounded-2xl p-5 md:p-6 mb-8">
+          <div class="grid md:grid-cols-12 gap-4 items-end">
+            <div class="md:col-span-6">
+              <label class="block text-sm mb-2 text-gray-400">Search</label>
+              <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                <input id="searchInput" type="text" placeholder="Search images..."
+                  class="w-full pl-10 pr-3 py-3 rounded-lg bg-black/20 border border-gray-700 text-gray-100 transition focus-ring"
+                />
+              </div>
+            </div>
+
+            <div class="md:col-span-3">
+              <label class="block text-sm mb-2 text-gray-400">Category</label>
+              <select id="categorySelect"
+                class="w-full px-3 py-3 rounded-lg bg-black/20 border border-gray-700 text-gray-100 transition focus-ring">
+                <!-- Categories will be populated from gallery.js -->
+              </select>
+            </div>
+
+            <div class="md:col-span-3">
+              <label class="block text-sm mb-2 text-gray-400">Actions</label>
+              <button id="clearBtn"
+                class="w-full px-4 py-3 rounded-lg border border-gray-700 hover:border-space-accent transition text-gray-200">
+                Clear Filters
+              </button>
+            </div>
+
+            <div class="md:col-span-12">
+              <div class="flex items-center justify-between text-sm pt-2 border-t border-gray-800">
+                <p class="text-gray-400">Results: <span id="resultCount" class="text-space-accent font-bold">0</span></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gallery Grid -->
+        <div id="gallery" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <!-- Gallery items will be generated here -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="hidden text-center py-20">
+          <i class="fas fa-images text-6xl text-gray-700 mb-4"></i>
+          <p class="text-gray-400 text-lg">No images found matching your filters.</p>
+          <button onclick="document.getElementById('clearBtn').click()"
+            class="mt-4 px-6 py-2 border border-space-accent text-space-accent rounded-lg hover:bg-space-accent/10 transition">
+            Clear Filters
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Lightbox Modal -->
+  <div id="lightbox" class="hidden fixed inset-0 z-[9999] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="relative max-w-5xl w-full">
+      <button id="closeLb" class="absolute -top-12 right-0 text-white hover:text-space-accent text-4xl transition">
+        <i class="fas fa-times"></i>
+      </button>
+      <img id="lightboxImg" src="" alt="" class="w-full rounded-lg scale-95 opacity-0 transition-all duration-300" />
+      <div class="mt-4 text-center">
+        <h3 id="lightboxTitle" class="text-2xl font-bold text-white"></h3>
+        <p id="lightboxCategory" class="text-space-accent text-sm mt-1"></p>
+        <p id="lightboxDescription" class="text-gray-400 text-sm mt-2"></p>
+        <p id="lightboxDate" class="text-gray-500 text-xs mt-1"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Load gallery data -->
+  <script src="../data/gallery.js"></script>
+
+  <!-- Gallery functionality - LIGHTWEIGHT & FAST -->
+  <script>
+    const $ = (id) => document.getElementById(id);
+    
+    // Check if data loaded
+    if (typeof GALLERY_ITEMS === 'undefined') {
+      console.error('❌ GALLERY_ITEMS not loaded');
+      $('emptyState').innerHTML = `
+        <div class="text-center py-20">
+          <i class="fas fa-exclamation-triangle text-6xl text-red-500 mb-4"></i>
+          <p class="text-red-400 text-lg font-bold">Error: Gallery data not found!</p>
+          <p class="text-gray-400 text-sm mt-2">Expected path: <code>data/gallery.js</code></p>
+          <p class="text-gray-500 text-xs mt-2">Open browser console (F12) for details</p>
+        </div>
+      `;
+      $('emptyState').classList.remove('hidden');
+    } else {
+      console.log(`✓ Loaded ${GALLERY_ITEMS.length} gallery items`);
+    }
+
+    let filteredItems = [];
+
+    // Populate categories
+    function populateCategories() {
+      const select = $("categorySelect");
+      const categories = typeof GALLERY_CATEGORIES !== 'undefined' ? GALLERY_CATEGORIES : [
+        { value: "all", label: "All Categories" },
+        { value: "projects", label: "Projects" },
+        { value: "competitions", label: "Competitions" },
+        { value: "workshops", label: "Workshops" },
+        { value: "events", label: "Events" },
+        { value: "certificates", label: "Certificates" }
+      ];
+      
+      select.innerHTML = categories.map(cat => 
+        `<option value="${cat.value}">${cat.label}</option>`
+      ).join('');
+    }
+
+    // Render gallery
+    function render() {
+      if (typeof GALLERY_ITEMS === 'undefined') return;
+      
+      const gallery = $("gallery");
+      const empty = $("emptyState");
+      const search = $("searchInput").value.toLowerCase();
+      const category = $("categorySelect").value;
+
+      // Filter
+      filteredItems = GALLERY_ITEMS.filter(item => {
+        const matchesSearch = !search || 
+          item.title.toLowerCase().includes(search) ||
+          (item.description && item.description.toLowerCase().includes(search));
+        const matchesCategory = category === "all" || item.category === category;
+        return matchesSearch && matchesCategory;
+      });
+
+      $("resultCount").textContent = `${filteredItems.length} image${filteredItems.length !== 1 ? 's' : ''}`;
+
+      if (filteredItems.length === 0) {
+        gallery.innerHTML = "";
+        empty.classList.remove("hidden");
+        return;
+      }
+      
+      empty.classList.add("hidden");
+
+      // Render items
+      gallery.innerHTML = filteredItems.map(item => `
+        <div class="gallery-item glass tech-border aspect-square cursor-pointer" onclick="openLightbox(${item.id})">
+          <img src="../${item.image}" alt="${item.title}" class="w-full h-full object-cover" 
+               onerror="this.src='https://via.placeholder.com/400x400/0B0D17/00F0FF?text=Image+Not+Found'" loading="lazy" />
+          <div class="gallery-overlay">
+            <div>
+              <p class="text-white font-bold text-sm">${item.title}</p>
+              <p class="text-space-accent text-xs uppercase">${item.category}</p>
+              ${item.date ? `<p class="text-gray-400 text-xs mt-1">${item.date}</p>` : ''}
+            </div>
+          </div>
+        </div>
+      `).join('');
+      
+      // Fade in animation
+      setTimeout(() => {
+        document.querySelectorAll('.gallery-item').forEach((el, i) => {
+          setTimeout(() => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+              el.style.transition = 'all 0.5s ease';
+              el.style.opacity = '1';
+              el.style.transform = 'translateY(0)';
+            }, 50);
+          }, i * 50);
+        });
+      }, 10);
+    }
+
+    // Lightbox
+    window.openLightbox = function(itemId) {
+      const item = GALLERY_ITEMS.find(i => i.id === itemId);
+      if (!item) return;
+      
+      const lb = $("lightbox");
+      const img = $("lightboxImg");
+      
+      $("lightboxTitle").textContent = item.title;
+      $("lightboxCategory").textContent = item.category.charAt(0).toUpperCase() + item.category.slice(1);
+      $("lightboxDescription").textContent = item.description || '';
+      $("lightboxDate").textContent = item.date || '';
+      
+      img.src = `../${item.image}`;
+      img.alt = item.title;
+      img.onerror = () => img.src = 'https://via.placeholder.com/1200x800/0B0D17/00F0FF?text=Image+Not+Found';
+      
+      lb.classList.remove("hidden");
+      requestAnimationFrame(() => {
+        img.classList.remove("scale-95", "opacity-0");
+        img.classList.add("scale-100", "opacity-100");
+      });
+    }
+
+    function closeLightbox() {
+      const lb = $("lightbox");
+      const img = $("lightboxImg");
+      img.classList.remove("scale-100", "opacity-100");
+      img.classList.add("scale-95", "opacity-0");
+      setTimeout(() => lb.classList.add("hidden"), 200);
+    }
+
+    // Event listeners
+    $("searchInput").addEventListener("input", render);
+    $("categorySelect").addEventListener("change", render);
+    $("clearBtn").addEventListener("click", () => {
+      $("searchInput").value = "";
+      $("categorySelect").value = "all";
+      render();
+    });
+
+    $("closeLb").addEventListener("click", closeLightbox);
+    $("lightbox").addEventListener("click", (e) => {
+      if (e.target === $("lightbox")) closeLightbox();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !$("lightbox").classList.contains("hidden")) {
+        closeLightbox();
+      }
+    });
+
+    // Mobile menu
+    $('mobileMenuBtn').addEventListener('click', () => {
+      $('mobileMenu').classList.toggle('hidden');
+    });
+
+    // Simple starfield (lightweight - only 60 stars)
+    const canvas = $('canvas-container');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+
+    function initCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      stars = Array.from({ length: 60 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.5,
+        dx: (Math.random() - 0.5) * 0.3,
+        dy: (Math.random() - 0.5) * 0.3
+      }));
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw connections
+      ctx.strokeStyle = 'rgba(0,240,255,0.08)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i < stars.length; i++) {
+        for (let j = i + 1; j < stars.length; j++) {
+          const dx = stars[i].x - stars[j].x;
+          const dy = stars[i].y - stars[j].y;
+          if (dx * dx + dy * dy < 10000) {  // 100px radius
+            ctx.beginPath();
+            ctx.moveTo(stars[i].x, stars[i].y);
+            ctx.lineTo(stars[j].x, stars[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Draw stars
+      ctx.fillStyle = '#ffffff';
+      stars.forEach(s => {
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+        s.x += s.dx;
+        s.y += s.dy;
+        if (s.x < 0 || s.x > canvas.width) s.dx *= -1;
+        if (s.y < 0 || s.y > canvas.height) s.dy *= -1;
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    // Initialize everything
+    window.addEventListener('resize', initCanvas);
+    initCanvas();
+    animate();
+    populateCategories();
+    if (typeof GALLERY_ITEMS !== 'undefined') render();
+    
+    console.log('✓ Gallery initialized successfully');
+  </script>
+</body>
+</html>

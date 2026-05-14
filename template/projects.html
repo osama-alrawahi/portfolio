@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Projects | Showcase</title>
+
+  <!-- Fonts + Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- External Stylesheet -->
+  <link rel="stylesheet" href="../static/style.css">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Space Grotesk', 'sans-serif'], arabic: ['Cairo', 'sans-serif'] },
+          colors: {
+            space: { 900:'#0B0D17', 800:'#151932', accent:'#00F0FF', nebula:'#7000FF' },
+            lab: { 100:'#F3F4F6', accent:'#F97316' }
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'spin-slow': 'spin 10s linear infinite',
+            'pulse-glow': 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          keyframes: {
+            float: { '0%,100%':{transform:'translateY(0)'}, '50%':{transform:'translateY(-12px)'} },
+            'pulse-glow': { '0%,100%':{opacity:1, boxShadow:'0 0 20px #00F0FF'}, '50%':{opacity:.5, boxShadow:'0 0 5px #00F0FF'} }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="text-gray-300 antialiased overflow-x-hidden transition-colors duration-300">
+  <canvas id="canvas-container"></canvas>
+
+  <!-- Top Bar -->
+  <nav class="fixed w-full z-50 glass transition-all duration-300">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="../index.html" class="text-2xl font-bold tracking-tighter hover:text-space-accent transition-colors flex items-center gap-2">
+        <i class="fa-solid fa-atom text-space-accent"></i>
+        <span class="text-white">Osama Al-Rawahi</span>
+      </a>
+
+      <div class="hidden md:flex gap-6">
+        <a href="../index.html" class="hover:text-space-accent transition">Home</a>
+        <a href="cv.html" class="hover:text-space-accent transition">CV</a>
+        <a href="projects.html" class="text-space-accent">Projects</a>
+        <a href="certificates.html" class="hover:text-space-accent transition">Certificates</a>
+        <a href="gallery.html" class="hover:text-space-accent transition">Gallery</a>
+      </div>
+    </div>
+  </nav>
+
+  <main id="top" class="pt-28 pb-20">
+    <section class="container mx-auto px-6">
+      <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-10">
+          <div class="inline-block px-3 py-1 border border-space-accent rounded-full text-space-accent text-sm font-mono mb-3">
+            <span class="animate-pulse">●</span> <span>Portfolio / Projects</span>
+          </div>
+          <h1 class="text-4xl md:text-5xl font-bold text-white">
+            Mission Lab <span class="text-space-accent">/</span> Projects
+          </h1>
+          <p class="mt-3 text-gray-400">
+            Search, filter by tag buttons (multi-select), sort, and click any project card to view details.
+          </p>
+        </div>
+
+        <!-- Controls -->
+        <div class="glass tech-border rounded-2xl p-5 md:p-6 mb-8">
+          <div class="grid md:grid-cols-12 gap-4 items-end">
+            <!-- Search -->
+            <div class="md:col-span-6">
+              <label class="block text-sm mb-2 text-gray-400">Search by title</label>
+              <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                <input id="searchInput" type="text" placeholder="e.g., JISSR-OM"
+                  class="w-full pl-10 pr-3 py-3 rounded-lg bg-black/20 border border-gray-700 text-gray-100 focus-ring transition"
+                />
+              </div>
+            </div>
+
+            <!-- Sort -->
+            <div class="md:col-span-3">
+              <label class="block text-sm mb-2 text-gray-400">Sort</label>
+              <select id="sortSelect"
+                class="w-full px-3 py-3 rounded-lg bg-black/20 border border-gray-700 text-gray-100 focus-ring transition">
+                <option value="newest">Newest</option>
+                <option value="oldest">Oldest</option>
+                <option value="title">Title (A→Z)</option>
+              </select>
+            </div>
+
+            <!-- Clear -->
+            <div class="md:col-span-3">
+              <label class="block text-sm mb-2 text-gray-400">Actions</label>
+              <div class="grid grid-cols-2 gap-2">
+                <button id="clearBtn"
+                  class="px-4 py-3 rounded-lg border border-gray-700 hover:border-space-accent transition text-gray-200">
+                  Clear
+                </button>
+                <button id="statsBtn"
+                  class="px-4 py-3 rounded-lg border border-space-accent text-space-accent hover:bg-space-accent hover:text-black transition font-bold">
+                  <i class="fa-solid fa-chart-simple mr-2"></i> Stats
+                </button>
+              </div>
+            </div>
+
+            <!-- Tag buttons -->
+            <div class="md:col-span-12">
+              <label class="block text-sm mb-2 text-gray-400">Filter by tag (buttons)</label>
+              <div id="tagButtons" class="flex gap-2 overflow-x-auto pb-1"></div>
+            </div>
+
+            <!-- Result line -->
+            <div class="md:col-span-12 flex flex-wrap items-center gap-3 pt-1">
+              <span id="resultCount" class="text-sm font-mono text-space-accent bg-space-accent/10 px-3 py-1 rounded-full">0 results</span>
+              <span id="activeFilters" class="text-sm text-gray-500"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grid -->
+        <div id="grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+        <!-- Empty state -->
+        <div id="emptyState" class="hidden glass tech-border rounded-2xl p-8 mt-6 text-center">
+          <i class="fa-solid fa-circle-info text-3xl text-space-accent mb-3"></i>
+          <h3 class="text-xl font-bold text-white">No projects found</h3>
+          <p class="text-gray-400 mt-1">Try removing filters or changing the search text.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Statistics Modal -->
+    <div id="statsModal" class="fixed inset-0 z-[70] bg-black/80 hidden items-center justify-center p-4 backdrop-blur-sm">
+      <div class="max-w-4xl w-full">
+        <div class="glass tech-border rounded-2xl p-5 md:p-6">
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+            <div>
+              <h3 class="text-xl md:text-2xl font-bold text-white">Statistics</h3>
+              <p class="text-sm text-gray-400">Uses the same filtered results currently shown on the page.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <select id="chartType"
+                class="px-3 py-2 rounded-full bg-black/20 border border-gray-700 text-gray-100 focus-ring transition">
+                <option value="bar">Year (Bar)</option>
+                <option value="line">Year (Time series)</option>
+                <option value="pie">Tags (Pie)</option>
+              </select>
+              <button id="closeStats"
+                class="px-4 py-2 rounded-full border border-gray-600 hover:border-space-accent transition text-gray-200">
+                Close
+              </button>
+            </div>
+          </div>
+          <div class="glass rounded-2xl p-3 md:p-4 h-72 md:h-80">
+            <canvas id="yearChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Project Details Modal -->
+  <div id="lightbox" class="fixed inset-0 z-[60] bg-black/90 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+    <button id="closeLb" class="absolute top-6 right-6 text-white text-4xl hover:text-space-accent" aria-label="Close">&times;</button>
+    <div class="max-w-4xl w-full">
+      <div class="glass rounded-2xl p-4 md:p-5 tech-border">
+        <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-3 mb-4">
+          <div>
+            <div id="lbTitle" class="text-xl md:text-2xl font-bold text-white"></div>
+            <div id="lbMeta" class="text-sm text-gray-400 mt-1"></div>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <a id="lbDemo" href="#" target="_blank"
+               class="hidden inline-flex items-center gap-2 px-4 py-2 rounded-full border border-space-accent text-space-accent hover:bg-space-accent hover:text-black transition font-bold">
+              <i class="fa-solid fa-up-right-from-square"></i> Demo
+            </a>
+            <a id="lbCode" href="#" target="_blank"
+               class="hidden inline-flex items-center gap-2 px-4 py-2 rounded-full border border-gray-600 text-gray-200 hover:border-space-accent transition font-bold">
+              <i class="fa-brands fa-github"></i> Code
+            </a>
+          </div>
+        </div>
+        <div class="grid md:grid-cols-5 gap-4">
+          <div class="md:col-span-2">
+            <img id="lbImage" src="" alt="Project preview" class="w-full rounded-lg tech-border">
+          </div>
+          <div class="md:col-span-3">
+            <h4 class="text-sm font-bold text-space-accent mb-2">Description</h4>
+            <p id="lbDescription" class="text-gray-300 mb-4"></p>
+            <h4 class="text-sm font-bold text-space-accent mb-2">Tech Stack</h4>
+            <div id="lbStack" class="flex flex-wrap gap-2"></div>
+          </div>
+        </div>
+        <p class="text-center text-xs text-gray-500 mt-3">Tip: press <span class="font-mono">Esc</span> to close.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="bg-space-900 text-gray-500 py-8 text-center border-t border-gray-800">
+    <div class="container mx-auto px-6">
+      <p>&copy; 2026 Projects Showcase. Built with ❤️</p>
+    </div>
+  </footer>
+
+  <!-- External Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="../static/utils.js"></script>
+  <script src="../data/projects.js"></script>
+  
+  <script>
+    // =========================================================
+    // DATA NOW LOADED FROM EXTERNAL projects.js
+    // =========================================================
+    // Use PROJECT_TAGS from projects.js (renamed from TAGS for consistency)
+    const TAGS = PROJECT_TAGS;
+
+    // =========================================================
+    // Helpers
+    // =========================================================
+    const $ = (id) => document.getElementById(id);
+    const norm = (s) => (s || "").toString().trim().toLowerCase();
+
+    function prettyDate(dateStr){
+      const d = new Date(dateStr);
+      if (isNaN(d)) return dateStr || "";
+      return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: '2-digit' });
+    }
+
+    // =========================================================
+    // State Management
+    // =========================================================
+    const activeTags = new Set(["All"]);
+    let lastFilteredItems = [];
+
+    function getState(){
+      const search = norm($("searchInput").value);
+      const sort = $("sortSelect").value;
+      const tags = Array.from(activeTags);
+      return { search, sort, tags };
+    }
+
+    // =========================================================
+    // Tag Buttons
+    // =========================================================
+    function buildTagButtons(){
+      const container = $("tagButtons");
+      container.innerHTML = "";
+      TAGS.forEach(tag => {
+        const btn = document.createElement("button");
+        btn.className = "tag-chip px-3 py-1.5 rounded-full text-sm border border-gray-700 hover:border-space-accent transition";
+        btn.textContent = tag;
+        if (activeTags.has(tag)) btn.classList.add("active");
+        btn.addEventListener("click", () => {
+          if (tag === "All"){
+            activeTags.clear();
+            activeTags.add("All");
+          } else {
+            activeTags.delete("All");
+            if (activeTags.has(tag)) activeTags.delete(tag);
+            else activeTags.add(tag);
+            if (activeTags.size === 0) activeTags.add("All");
+          }
+          syncTagButtons();
+          applyFilters();
+        });
+        container.appendChild(btn);
+      });
+    }
+
+    function syncTagButtons(){
+      const buttons = $("tagButtons").querySelectorAll("button");
+      buttons.forEach(btn => {
+        const tag = btn.textContent;
+        if (activeTags.has(tag)) btn.classList.add("active");
+        else btn.classList.remove("active");
+      });
+    }
+
+    // =========================================================
+    // Filtering & Sorting
+    // =========================================================
+    function applyFilters(){
+      const { search, sort, tags } = getState();
+      let items = [...PROJECTS];
+
+      // Filter by tags
+      if (!tags.includes("All")){
+        items = items.filter(p => tags.some(t => (p.tags || []).includes(t)));
+      }
+
+      // Filter by search
+      if (search){
+        items = items.filter(p => norm(p.title).includes(search) || norm(p.description).includes(search));
+      }
+
+      // Sort
+      if (sort === "newest") items.sort((a,b) => new Date(b.date) - new Date(a.date));
+      else if (sort === "oldest") items.sort((a,b) => new Date(a.date) - new Date(b.date));
+      else if (sort === "title") items.sort((a,b) => norm(a.title).localeCompare(norm(b.title)));
+
+      lastFilteredItems = items;
+      renderGrid(items);
+      updateResultCount(items.length, tags);
+    }
+
+    function updateResultCount(count, tags){
+      $("resultCount").textContent = `${count} result${count === 1 ? '' : 's'}`;
+      const active = tags.filter(t => t !== "All");
+      if (active.length > 0){
+        $("activeFilters").textContent = `Showing: ${active.join(", ")}`;
+      } else {
+        $("activeFilters").textContent = "";
+      }
+    }
+
+    // =========================================================
+    // Badge Color Mapping
+    // =========================================================
+    function getBadgeClasses(badgeColor) {
+      const colorMap = {
+        green: "bg-green-500/20 text-green-400 border-green-500/50",
+        yellow: "bg-yellow-500/20 text-yellow-400 border-yellow-500/50",
+        purple: "bg-purple-500/20 text-purple-400 border-purple-500/50",
+        blue: "bg-blue-500/20 text-blue-400 border-blue-500/50",
+        gray: "bg-gray-500/20 text-gray-400 border-gray-500/50",
+        red: "bg-red-500/20 text-red-400 border-red-500/50"
+      };
+      return colorMap[badgeColor] || "bg-gray-500/20 text-gray-400 border-gray-500/50";
+    }
+
+    // =========================================================
+    // Grid Rendering
+    // =========================================================
+    function renderGrid(items){
+      const grid = $("grid");
+      const empty = $("emptyState");
+
+      if (items.length === 0){
+        grid.innerHTML = "";
+        empty.classList.remove("hidden");
+        return;
+      }
+
+      empty.classList.add("hidden");
+      grid.innerHTML = items.map(p => {
+        const icon = p.icon || "fa-solid fa-code";
+        const badgeHtml = p.badge 
+          ? `<span class="px-2 py-1 rounded-full text-xs font-bold border ${getBadgeClasses(p.badgeColor)}">${p.badge}</span>`
+          : "";
+        
+        return `
+          <div class="glass tech-border rounded-2xl overflow-hidden cursor-pointer hover:scale-105 transition-transform project-card" data-id="${p.id}">
+            <div class="relative h-48 bg-gradient-to-br from-space-800 to-space-900 flex items-center justify-center">
+              <img src="../${p.image}" alt="${p.title}" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <div class="absolute inset-0 flex items-center justify-center text-space-accent" style="display:none;">
+                <i class="${icon} text-6xl opacity-50"></i>
+              </div>
+            </div>
+            <div class="p-5">
+              <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                <i class="${icon} text-space-accent"></i>
+                ${p.title}
+              </h3>
+              ${badgeHtml}
+              <p class="text-sm text-gray-400 mb-3 line-clamp-2"></p>
+              <p class="text-sm text-gray-400 mb-3 line-clamp-2">${p.description}</p>
+              <div class="flex flex-wrap gap-1.5 mb-3">
+                ${(p.tags || []).slice(0, 3).map(tag => 
+                  `<span class="px-2 py-0.5 text-xs rounded-full bg-space-accent/10 text-space-accent border border-space-accent/30">${tag}</span>`
+                ).join("")}
+                ${p.tags && p.tags.length > 3 ? `<span class="px-2 py-0.5 text-xs rounded-full bg-gray-700/50 text-gray-400">+${p.tags.length - 3}</span>` : ""}
+                </div>
+              <div class="text-xs text-gray-500 font-mono">${prettyDate(p.date)}</div>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      // Add click listeners
+      grid.querySelectorAll(".project-card").forEach(card => {
+        card.addEventListener("click", () => {
+          const id = parseInt(card.dataset.id);
+          const project = PROJECTS.find(p => p.id === id);
+          if (project) showProject(project);
+        });
+      });
+    }
+
+    // =========================================================
+    // Project Lightbox
+    // =========================================================
+    function showProject(p){
+      $("lightbox").classList.remove("hidden");
+      $("lightbox").classList.add("flex");
+      $("lbTitle").textContent = p.title;
+      $("lbMeta").textContent = prettyDate(p.date);
+      $("lbImage").src = "../" + p.image;
+      $("lbDescription").textContent = p.description;
+      $("lbStack").innerHTML = (p.stack || []).map(tech => 
+        `<span class="px-3 py-1 text-sm rounded-full bg-space-accent/10 text-space-accent border border-space-accent/30">${tech}</span>`
+      ).join("");
+
+      const demo = $("lbDemo");
+      const code = $("lbCode");
+
+      if (p.demoUrl && p.demoUrl !== "#") { demo.href = p.demoUrl; demo.classList.remove("hidden"); }
+      else demo.classList.add("hidden");
+
+      if (p.codeUrl && p.codeUrl !== "#") { code.href = p.codeUrl; code.classList.remove("hidden"); }
+      else code.classList.add("hidden");
+    }
+
+    function closeProject(){
+      $("lightbox").classList.add("hidden");
+    }
+
+    $("closeLb").addEventListener("click", closeProject);
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !$("lightbox").classList.contains("hidden")) closeProject();
+      if (e.key === "Escape" && !$("statsModal").classList.contains("hidden")) closeStats();
+    });
+
+    // =========================================================
+    // Controls
+    // =========================================================
+    $("searchInput").addEventListener("input", applyFilters);
+    $("sortSelect").addEventListener("change", applyFilters);
+
+    $("clearBtn").addEventListener("click", () => {
+      $("searchInput").value = "";
+      $("sortSelect").value = "newest";
+      activeTags.clear();
+      activeTags.add("All");
+      syncTagButtons();
+      applyFilters();
+    });
+
+    $("statsBtn").addEventListener("click", openStats);
+    $("closeStats").addEventListener("click", closeStats);
+
+    $("statsModal").addEventListener("click", (e) => {
+      if (e.target === $("statsModal")) closeStats();
+    });
+
+    $("chartType").addEventListener("change", () => rebuildChart(lastFilteredItems));
+
+    // =========================================================
+    // STATISTICS (chart depends on filtered items)
+    // =========================================================
+    let yearChartInstance = null;
+
+    function openStats(){
+      applyFilters();
+      $("statsModal").classList.remove("hidden");
+      $("statsModal").classList.add("flex");
+      rebuildChart(lastFilteredItems);
+    }
+
+    function closeStats(){
+      $("statsModal").classList.add("hidden");
+      $("statsModal").classList.remove("flex");
+    }
+
+    function yearOf(dateStr){
+      const d = new Date(dateStr);
+      if (isNaN(d)) return null;
+      return String(d.getFullYear());
+    }
+
+    function getActiveState(){
+      return getState();
+    }
+
+    function rebuildChart(items){
+      const type = ($("chartType")?.value) || "bar";
+      const ctx = document.getElementById("yearChart").getContext("2d");
+      if (yearChartInstance) yearChartInstance.destroy();
+
+      const gridColor = "rgba(255,255,255,0.08)";
+      const tickColor = "rgba(255,255,255,0.75)";
+
+      // PIE: tags
+      if (type === "pie") {
+        let selectedTagSet = null;
+        try {
+          const state = getActiveState();
+          if (Array.isArray(state.tags) && !state.tags.includes("All")) {
+            selectedTagSet = new Set(state.tags);
+          }
+        } catch (e) {
+          selectedTagSet = null;
+        }
+
+        const tagCounts = new Map();
+        items.forEach(p => {
+          (p.tags || []).forEach(t => {
+            if (selectedTagSet && !selectedTagSet.has(t)) return;
+            tagCounts.set(t, (tagCounts.get(t) || 0) + 1);
+          });
+        });
+
+        const labels = Array.from(tagCounts.keys()).sort((a,b)=>a.localeCompare(b));
+        const data = labels.map(l => tagCounts.get(l));
+
+        yearChartInstance = new Chart(ctx, {
+          type: "pie",
+          data: { labels, datasets: [{ label: "Tags", data }] },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { labels: { color: tickColor } },
+              tooltip: { enabled: true }
+            }
+          }
+        });
+        return;
+      }
+
+      // BAR/LINE: per year
+      const counts = new Map();
+      items.forEach(p => {
+        const y = yearOf(p.date) || "—";
+        counts.set(y, (counts.get(y) || 0) + 1);
+      });
+
+      const labels = Array.from(counts.keys()).sort((a,b)=>{
+        if (a === "—") return 1;
+        if (b === "—") return -1;
+        return Number(a) - Number(b);
+      });
+      const data = labels.map(l => counts.get(l));
+
+      yearChartInstance = new Chart(ctx, {
+        type: (type === "line") ? "line" : "bar",
+        data: {
+          labels,
+          datasets: [{
+            label: "Projects",
+            data,
+            tension: 0.25,
+            fill: false
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: tickColor } },
+            tooltip: { enabled: true }
+          },
+          scales: {
+            x: { ticks: { color: tickColor }, grid: { color: gridColor } },
+            y: { ticks: { color: tickColor, precision: 0 }, grid: { color: gridColor }, beginAtZero: true }
+          }
+        }
+      });
+    }
+
+    // =========================================================
+    // Init (starfield now handled by utils.js)
+    // =========================================================
+    buildTagButtons();
+    applyFilters();
+  </script>
+</body>
+</html>

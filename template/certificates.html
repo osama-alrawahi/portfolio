@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Certificates | Showcase</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Space Grotesk', 'sans-serif'], arabic: ['Cairo', 'sans-serif'] },
+          colors: {
+            space: { 900:'#0B0D17', 800:'#151932', accent:'#00F0FF', nebula:'#7000FF' },
+            lab: { 100:'#F3F4F6', accent:'#F97316' }
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'spin-slow': 'spin 10s linear infinite',
+            'pulse-glow': 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          keyframes: {
+            float: { '0%,100%':{transform:'translateY(0)'}, '50%':{transform:'translateY(-12px)'} },
+            'pulse-glow': { '0%,100%':{opacity:1, boxShadow:'0 0 20px #00F0FF'}, '50%':{opacity:.5, boxShadow:'0 0 5px #00F0FF'} }
+          }
+        }
+      }
+    }
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <style>
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #0B0D17; }
+    ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #00F0FF; }
+
+    /* Canvas Background */
+    #canvas-container {
+      position: fixed; 
+      inset: 0;
+      z-index: -1;
+      width: 100%;
+      height: 100%;
+      /* FIX 2: Set fallback color immediately to prevent white flash */
+      background: #0B0D17; 
+      background: linear-gradient(to bottom, #0B0D17, #151932);
+    }
+    
+    /* Light mode override (if needed later) */
+    html:not(.dark) #canvas-container {
+      background: linear-gradient(to bottom, #ffffff, #e5e7eb);
+    }
+
+    /* Glassmorphism */
+    .glass {
+      background: rgba(255,255,255,.03);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,.10);
+    }
+    html:not(.dark) .glass {
+      background: rgba(255,255,255,.82);
+      border: 1px solid rgba(0,0,0,.06);
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,.10);
+    }
+
+    /* Tech Borders */
+    .tech-border { position:relative; }
+    .tech-border::before, .tech-border::after {
+      content:''; position:absolute; width:18px; height:18px;
+      border:2px solid transparent; transition:all .25s; pointer-events:none;
+    }
+    .tech-border:hover::before {
+      top:-2px; left:-2px; border-top-color:#00F0FF; border-left-color:#00F0FF;
+    }
+    .tech-border:hover::after {
+      bottom:-2px; right:-2px; border-bottom-color:#00F0FF; border-right-color:#00F0FF;
+    }
+    html:not(.dark) .tech-border:hover::before { border-color:#F97316; }
+    html:not(.dark) .tech-border:hover::after  { border-color:#F97316; }
+
+    /* Inputs */
+    .focus-ring:focus { outline:none; box-shadow: 0 0 0 3px rgba(0,240,255,.25); border-color: rgba(0,240,255,.6); }
+    html:not(.dark) .focus-ring:focus { box-shadow: 0 0 0 3px rgba(249,115,22,.25); border-color: rgba(249,115,22,.7); }
+
+    /* Tag chips */
+    .tag-chip { user-select:none; white-space:nowrap; }
+    .tag-chip.active {
+      border-color: rgba(0,240,255,.9) !important;
+      background: rgba(0,240,255,.12); color: #00F0FF;
+    }
+    html:not(.dark) .tag-chip.active {
+      border-color: rgba(249,115,22,.95) !important;
+      background: rgba(249,115,22,.12); color: #F97316;
+    }
+
+    /* Timeline */
+    .timeline-wrap { position: relative; max-width: 1200px; margin: 0 auto; padding: 6px 0; }
+    .timeline-wrap::after {
+      content:''; position:absolute; width: 6px; top:0; bottom:0; left:50%; margin-left:-3px;
+      border-radius: 999px; background: rgba(255,255,255,.18);
+    }
+    html:not(.dark) .timeline-wrap::after { background: rgba(0,0,0,.10); }
+
+    .tl-item { padding: 10px 40px; position: relative; width: 50%; }
+    .tl-item::after {
+      content:''; position:absolute; width: 22px; height: 22px; right: -11px; top: 20px;
+      border-radius: 50%; z-index: 1; background: rgba(255,255,255,.95);
+      border: 4px solid rgba(0,240,255,.95); box-shadow: 0 0 0 6px rgba(0,240,255,.10);
+    }
+    html:not(.dark) .tl-item::after {
+      background: rgba(255,255,255,1); border-color: rgba(249,115,22,.95); box-shadow: 0 0 0 6px rgba(249,115,22,.12);
+    }
+
+    .tl-left { left: 0; }
+    .tl-right { left: 50%; }
+    .tl-right::after { left: -11px; right:auto; }
+
+    .tl-left::before {
+      content:" "; height:0; position:absolute; top: 24px; width:0; z-index:1; right: 30px;
+      border: medium solid rgba(255,255,255,.18); border-width: 10px 0 10px 10px;
+      border-color: transparent transparent transparent rgba(255,255,255,.18);
+    }
+    .tl-right::before {
+      content:" "; height:0; position:absolute; top: 24px; width:0; z-index:1; left: 30px;
+      border: medium solid rgba(255,255,255,.18); border-width: 10px 10px 10px 0;
+      border-color: transparent rgba(255,255,255,.18) transparent transparent;
+    }
+    html:not(.dark) .tl-left::before { border-color: transparent transparent transparent rgba(0,0,0,.10); }
+    html:not(.dark) .tl-right::before { border-color: transparent rgba(0,0,0,.10) transparent transparent; }
+
+    @media screen and (max-width: 720px){
+      .timeline-wrap::after { left: 22px; }
+      .tl-item { width: 100%; padding-left: 60px; padding-right: 14px; }
+      .tl-item::before {
+        left: 44px; right:auto;
+        border: medium solid rgba(255,255,255,.18);
+        border-width: 10px 10px 10px 0;
+        border-color: transparent rgba(255,255,255,.18) transparent transparent;
+      }
+      html:not(.dark) .tl-item::before { border-color: transparent rgba(0,0,0,.10) transparent transparent; }
+      .tl-left::after, .tl-right::after { left: 11px; right:auto; }
+      .tl-right { left: 0; }
+    }
+
+    /* Common elements */
+    select, select option { background-color: #0B0D17; color: #E5E7EB; }
+    select:focus { outline: none; }
+    #statsModal > div, #lightbox > div { max-height: calc(100vh - 32px); overflow: auto; }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity .6s ease, transform .6s ease;
+      will-change: opacity, transform;
+    }
+    .reveal.show { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+
+<body class="bg-[#0B0D17] text-gray-300 antialiased overflow-x-hidden transition-colors duration-300">
+  
+  <canvas id="canvas-container"></canvas>
+
+  <nav class="fixed w-full z-50 glass transition-all duration-300">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="../index.html" class="text-2xl font-bold tracking-tighter hover:text-space-accent transition-colors flex items-center gap-2">
+        <i class="fa-solid fa-award text-space-accent dark:text-space-accent text-lab-accent"></i>
+        <span class="dark:text-white text-gray-900">Osama Al-Rawahi</span>
+      </a>
+
+      <div class="hidden md:flex gap-6">
+        <a href="../index.html" class="hover:text-space-accent transition">Home</a>
+        <a href="cv.html" class="hover:text-space-accent transition">CV</a>
+        <a href="projects.html" class="hover:text-space-accent transition">Projects</a>
+        <a href="certificates.html" class="text-space-accent">Certificates</a>
+        <a href="gallery.html" class="hover:text-space-accent transition">Gallery</a>
+      </div>
+    </div>
+  </nav>
+
+  <main id="top" class="pt-28 pb-20">
+    <section class="container mx-auto px-6">
+      <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-10">
+          <div class="inline-block px-3 py-1 border border-space-accent rounded-full text-space-accent text-sm font-mono mb-3">
+            <span class="animate-pulse">●</span> <span>Portfolio / Certificates</span>
+          </div>
+          <h1 class="text-4xl md:text-5xl font-bold dark:text-white text-gray-900">
+            Mission Log <span class="text-space-accent">/</span> Certificates
+          </h1>
+          <p class="mt-3 text-gray-400 dark:text-gray-400 text-gray-600">
+            Search by title, filter by tag buttons or year, switch between Grid / Timeline, and click any certificate image to view fullscreen.
+          </p>
+        </div>
+
+        <div class="glass tech-border rounded-2xl p-5 md:p-6 mb-8">
+          <div class="grid md:grid-cols-12 gap-4 items-end">
+            <div class="md:col-span-6">
+              <label class="block text-sm mb-2 dark:text-gray-400 text-gray-600">Search by title</label>
+              <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                <input id="searchInput" type="text" placeholder="e.g., Google Data Analytics"
+                  class="w-full pl-10 pr-3 py-3 rounded-lg bg-black/10 dark:bg-black/20 border border-gray-700 text-gray-100 dark:text-gray-100 text-gray-900 focus-ring transition"
+                />
+              </div>
+            </div>
+
+            <div class="md:col-span-3">
+              <label class="block text-sm mb-2 dark:text-gray-400 text-gray-600">Filter by year</label>
+              <select id="yearSelect"
+                class="w-full px-3 py-3 rounded-lg bg-black/10 dark:bg-black/20 border border-gray-700 dark:text-gray-100 text-gray-900 focus-ring transition">
+                <option value="all">All years</option>
+              </select>
+            </div>
+
+            <div class="md:col-span-3">
+              <label class="block text-sm mb-2 dark:text-gray-400 text-gray-600">View</label>
+              <div class="flex gap-2">
+                <button id="gridViewBtn" class="flex-1 px-3 py-3 rounded-lg border border-gray-700 hover:border-space-accent transition dark:text-gray-200 text-gray-800">
+                  <i class="fa-solid fa-grip mr-2"></i>
+                </button>
+                <button id="timelineViewBtn" class="flex-1 px-3 py-3 rounded-lg border border-gray-700 hover:border-space-accent transition dark:text-gray-200 text-gray-800">
+                  <i class="fa-solid fa-timeline mr-2"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="md:col-span-12">
+              <label class="block text-sm mb-2 dark:text-gray-400 text-gray-600">Filter by tag</label>
+              <div id="tagButtons" class="flex gap-2 overflow-x-auto pb-1"></div>
+            </div>
+
+            <div class="md:col-span-12 flex flex-wrap gap-3 pt-1">
+              <button id="clearBtn"
+                class="px-4 py-2 rounded-full border border-gray-600 hover:border-space-accent transition dark:text-gray-300 text-gray-700">
+                Clear filters
+              </button>
+
+              <button id="statsBtn"
+                class="px-4 py-2 rounded-full border border-space-accent text-space-accent hover:bg-space-accent hover:text-black transition font-bold">
+                <i class="fa-solid fa-chart-column mr-2"></i>Statistics
+              </button>
+
+              <div class="ml-auto flex items-center gap-2">
+                <span class="text-sm text-gray-500">Sort</span>
+                <select id="sortSelect"
+                  class="px-3 py-2 rounded-full bg-black/10 dark:bg-black/20 border border-gray-700 dark:text-gray-100 text-gray-900 focus-ring transition">
+                  <option value="newest">Newest</option>
+                  <option value="oldest">Oldest</option>
+                  <option value="title">Title (A→Z)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3 mb-5">
+          <span id="resultCount" class="text-sm font-mono text-space-accent bg-space-accent/10 px-3 py-1 rounded-full">0 results</span>
+          <span id="activeFilters" class="text-sm text-gray-500"></span>
+        </div>
+
+        <div id="grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+        <div id="timeline" class="hidden">
+          <div class="timeline-wrap" id="timelineWrap"></div>
+        </div>
+
+        <div id="emptyState" class="hidden glass tech-border rounded-2xl p-8 mt-6 text-center">
+          <i class="fa-solid fa-circle-info text-3xl text-space-accent mb-3"></i>
+          <h3 class="text-xl font-bold dark:text-white text-gray-900">No certificates found</h3>
+          <p class="text-gray-400 mt-1">Try removing filters or changing the search text.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="lightbox" class="fixed inset-0 z-[60] bg-black/90 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+    <button id="closeLb" class="absolute top-6 right-6 text-white text-4xl hover:text-space-accent" aria-label="Close">&times;</button>
+    <div class="max-w-5xl w-full">
+      <div class="glass rounded-2xl p-4 md:p-5 tech-border">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+          <div>
+            <div id="lbTitle" class="text-xl md:text-2xl font-bold dark:text-white text-gray-900"></div>
+            <div class="text-sm text-gray-400">
+              <span id="lbDate"></span>
+              <span class="mx-2 text-gray-600">•</span>
+              <span id="lbTags"></span>
+            </div>
+          </div>
+          <a id="lbOpenNew" href="#" target="_blank"
+             class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-space-accent text-space-accent hover:bg-space-accent hover:text-black transition font-bold">
+            <i class="fa-solid fa-up-right-from-square"></i> Open in new tab
+          </a>
+        </div>
+        <img id="lightboxImg" src="" alt="Certificate" class="w-full max-h-[72vh] object-contain rounded-xl shadow-[0_0_30px_rgba(0,240,255,0.2)] transform transition duration-300 scale-95 opacity-0" />
+      </div>
+      <p class="text-center text-xs text-gray-500 mt-3">Tip: press <span class="font-mono">Esc</span> to close.</p>
+    </div>
+  </div>
+
+  <div id="statsModal" class="fixed inset-0 z-[70] bg-black/80 hidden items-center justify-center p-4 backdrop-blur-sm">
+    <div class="max-w-4xl w-full">
+      <div class="glass tech-border rounded-2xl p-5 md:p-6">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+          <div>
+            <h3 class="text-xl md:text-2xl font-bold dark:text-white text-gray-900">Statistics</h3>
+            <p class="text-sm text-gray-500">Uses the same filtered results currently shown on the page.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <select id="chartType"
+              class="px-3 py-2 rounded-full bg-black/10 dark:bg-black/20 border border-gray-700 dark:text-gray-100 text-gray-900 focus-ring transition">
+              <option value="bar">Year (Bar)</option>
+              <option value="line">Year (Time series)</option>
+              <option value="pie">Tags (Pie)</option>
+            </select>
+            <button id="closeStats"
+              class="px-4 py-2 rounded-full border border-gray-600 hover:border-space-accent transition dark:text-gray-200 text-gray-800">
+              Close
+            </button>
+          </div>
+        </div>
+        <div class="glass rounded-2xl p-3 md:p-4 h-72 md:h-80">
+          <canvas id="yearChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="bg-space-900 text-gray-500 py-8 text-center border-t border-gray-800">
+    <div class="container mx-auto px-6">
+      <p>&copy; 2026 Certificates Showcase.</p>
+    </div>
+  </footer>
+
+  <!-- Load Certificates Data -->
+  <script src="../data/certificates.js"></script>
+
+  <script>
+    // Map CERTIFICATES from data file to CERTS format for this page
+    const CERTS = CERTIFICATES.map(cert => ({
+      title: cert.title,
+      date: cert.date,
+      tags: cert.tags,
+      image: cert.image.replace("images/", "../images/")
+    }));
+  
+    // =========================
+    // 2) MANUAL TAG LIST
+    // =========================
+    const TAGS = [
+      "All", "AI", "Automation", "Competition", "Evaluation",
+      "Event", "Hackathon", "Inventor", "IoT", "Performance",
+      "Quran", "Robot", "Workshop"
+    ];
+
+    // =========================
+    // 3) HELPERS
+    // =========================
+    const $ = (id) => document.getElementById(id);
+    const norm = (s) => (s || "").toString().trim().toLowerCase();
+
+    function yearOf(dateStr){
+      const d = new Date(dateStr);
+      return isNaN(d) ? "" : String(d.getFullYear());
+    }
+
+    function prettyDate(dateStr){
+      const d = new Date(dateStr);
+      if (isNaN(d)) return dateStr || "";
+      return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: '2-digit' });
+    }
+
+    // =========================
+    // FIX 1: Scroll reveal logic
+    // =========================
+    // Problem: The 2024 section was so tall (13 items) that the intersection observer
+    // with a 12% threshold never triggered because 12% of the height was larger than the viewport.
+    // Fix: Set threshold to 0 so it triggers as soon as it enters the screen.
+    let revealObserver = null;
+
+    function initRevealObserver(){
+      revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting){
+            entry.target.classList.add("show");
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0, rootMargin: "0px 0px -50px 0px" });
+    }
+
+    function observeReveals(){
+      if (!revealObserver) initRevealObserver();
+      document.querySelectorAll(".reveal").forEach(el => {
+        if (!el.classList.contains("show")) revealObserver.observe(el);
+      });
+    }
+
+    // Force dark mode
+    document.documentElement.classList.add("dark");
+
+    // =========================
+    // 5) STATE & LOGIC
+    // =========================
+    let activeTags = new Set(["All"]);
+    let activeView = "grid"; 
+    let lastFilteredItems = [];
+    let yearChartInstance = null;
+
+    function getActiveState(){
+      return {
+        q: norm($("searchInput").value),
+        tags: Array.from(activeTags),
+        year: $("yearSelect").value,
+        sort: $("sortSelect").value,
+        view: activeView
+      };
+    }
+
+    function populateYears(){
+      const yearSet = new Set();
+      CERTS.forEach(c => {
+        const y = yearOf(c.date);
+        if (y) yearSet.add(y);
+      });
+      const years = Array.from(yearSet).sort((a,b)=>Number(b)-Number(a));
+      const yearSel = $("yearSelect");
+      years.forEach(y => {
+        const opt = document.createElement("option");
+        opt.value = y;
+        opt.textContent = y;
+        yearSel.appendChild(opt);
+      });
+    }
+
+    function buildTagButtons(){
+      const wrap = $("tagButtons");
+      wrap.innerHTML = "";
+      TAGS.forEach(tag => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "tag-chip px-3 py-2 rounded-full border border-gray-700 hover:border-space-accent transition dark:text-gray-200 text-gray-800";
+        btn.dataset.tag = tag;
+        btn.innerHTML = `<i class="fa-solid fa-tag mr-2 text-gray-500"></i>${tag}`;
+        btn.addEventListener("click", () => {
+          if (tag === "All") {
+            activeTags.clear(); activeTags.add("All");
+          } else {
+            activeTags.delete("All");
+            if (activeTags.has(tag)) activeTags.delete(tag);
+            else activeTags.add(tag);
+            if (activeTags.size === 0) activeTags.add("All");
+          }
+          syncTagButtons();
+          applyFilters();
+        });
+        wrap.appendChild(btn);
+      });
+      syncTagButtons();
+    }
+
+    function syncTagButtons(){
+      const buttons = $("tagButtons").querySelectorAll("button[data-tag]");
+      buttons.forEach(b => {
+        b.classList.toggle("active", activeTags.has(b.dataset.tag));
+      });
+    }
+
+    function applyFilters(){
+      const state = getActiveState();
+      let items = [...CERTS];
+
+      if (state.q) items = items.filter(c => norm(c.title).includes(state.q));
+
+      if (state.tags && !state.tags.includes("All")) {
+        const selected = new Set(state.tags);
+        items = items.filter(c => (c.tags || []).some(t => selected.has(t)));
+      }
+
+      if (state.year !== "all") {
+        items = items.filter(c => yearOf(c.date) === state.year);
+      }
+
+      if (state.sort === "newest") items.sort((a,b)=> new Date(b.date) - new Date(a.date));
+      else if (state.sort === "oldest") items.sort((a,b)=> new Date(a.date) - new Date(b.date));
+      else if (state.sort === "title") items.sort((a,b)=> (a.title||"").localeCompare(b.title||""));
+
+      lastFilteredItems = items;
+      render(items, state);
+
+      if (!($("statsModal").classList.contains("hidden"))) {
+        rebuildChart(lastFilteredItems);
+      }
+    }
+
+    function setActiveView(view){
+      activeView = view;
+      const gridBtn = $("gridViewBtn");
+      const tlBtn = $("timelineViewBtn");
+      if (view === "grid"){
+        gridBtn.classList.add("border-space-accent");
+        tlBtn.classList.remove("border-space-accent");
+        $("grid").classList.remove("hidden");
+        $("timeline").classList.add("hidden");
+      } else {
+        tlBtn.classList.add("border-space-accent");
+        gridBtn.classList.remove("border-space-accent");
+        $("timeline").classList.remove("hidden");
+        $("grid").classList.add("hidden");
+      }
+      applyFilters();
+    }
+
+    function render(items, state){
+      const empty = $("emptyState");
+      const chips = [];
+      if (state.q) chips.push(`search: "${state.q}"`);
+      if (state.tags && !state.tags.includes("All")) chips.push(`tags: ${state.tags.join(", ")}`);
+      if (state.year !== "all") chips.push(`year: ${state.year}`);
+      $("activeFilters").textContent = chips.length ? `Active filters → ${chips.join(" · ")}` : "";
+
+      $("resultCount").textContent = `${items.length} result${items.length === 1 ? "" : "s"}`;
+
+      if (!items.length){
+        empty.classList.remove("hidden");
+        $("grid").innerHTML = "";
+        $("timelineWrap").innerHTML = "";
+        return;
+      }
+      empty.classList.add("hidden");
+
+      if (state.view === "timeline") renderTimeline(items);
+      else renderGrid(items);
+    }
+
+    function renderGrid(items){
+      const grid = $("grid");
+      grid.innerHTML = "";
+
+      items.forEach((c) => {
+        const tagBadges = (c.tags || []).map(t => `<span class="text-xs border border-gray-600 px-2 py-1 rounded-full text-gray-500">${t}</span>`).join("");
+        const card = document.createElement("div");
+        card.className = "glass tech-border rounded-2xl overflow-hidden group flex flex-col reveal";
+        card.innerHTML = `
+          <button class="relative h-48 bg-black/10 dark:bg-black/20 overflow-hidden flex items-center justify-center" type="button" aria-label="Open certificate">
+            <img src="${c.image}" alt="${c.title}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition duration-500"/>
+            <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+              <div class="px-4 py-2 rounded-full border border-space-accent text-space-accent bg-black/40 backdrop-blur-sm font-bold"><i class="fa-solid fa-magnifying-glass-plus"></i> View</div>
+            </div>
+          </button>
+          <div class="p-5 flex-1 flex flex-col gap-3">
+            <div class="flex items-start justify-between gap-3">
+              <h3 class="text-lg font-bold dark:text-white text-gray-900 leading-snug">${c.title}</h3>
+              <span class="text-xs font-mono text-space-accent bg-space-accent/10 px-2 py-1 rounded">${yearOf(c.date) || "—"}</span>
+            </div>
+            <div class="text-sm text-gray-400"><i class="fa-regular fa-calendar mr-2"></i><span>${prettyDate(c.date)}</span></div>
+            <div class="flex flex-wrap gap-2">${tagBadges}</div>
+          </div>
+        `;
+        card.querySelector("button[aria-label='Open certificate']").addEventListener("click", () => openLightbox(c));
+        grid.appendChild(card);
+      });
+      observeReveals();
+    }
+
+    function renderTimeline(items){
+      const wrap = $("timelineWrap");
+      wrap.innerHTML = "";
+
+      const groups = new Map();
+      items.forEach(c => {
+        const y = yearOf(c.date) || "—";
+        if (!groups.has(y)) groups.set(y, []);
+        groups.get(y).push(c);
+      });
+
+      const years = Array.from(groups.keys()).sort((a,b) => {
+        if (a === "—") return 1; if (b === "—") return -1;
+        return Number(b) - Number(a);
+      });
+
+      years.forEach((year, idx) => {
+        const sideClass = (idx % 2 === 0) ? "tl-left" : "tl-right";
+        const yearItems = groups.get(year).sort((a,b)=> new Date(b.date) - new Date(a.date));
+        const item = document.createElement("div");
+        item.className = `tl-item ${sideClass} reveal`;
+
+        const listHtml = yearItems.map(c => {
+          const tagBadges = (c.tags || []).map(t => `<span class="text-xs border border-gray-600 px-2 py-1 rounded-full text-gray-500">${t}</span>`).join("");
+          return `
+            <div class="mt-4">
+              <div class="flex items-start justify-between gap-3">
+                <div class="text-sm text-gray-400"><i class="fa-regular fa-calendar mr-2"></i><span>${prettyDate(c.date)}</span></div>
+              </div>
+              <div class="mt-2 font-bold dark:text-white text-gray-900">${c.title}</div>
+              <button type="button" class="mt-3 w-full h-56 rounded-xl overflow-hidden bg-black/10 dark:bg-black/20 group relative" data-open-image="1">
+                <img src="${c.image}" alt="${c.title}" class="w-full h-full object-cover opacity-85 group-hover:opacity-100 group-hover:scale-105 transition duration-500"/>
+                <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                  <div class="px-4 py-2 rounded-full border border-space-accent text-space-accent bg-black/40 backdrop-blur-sm font-bold"><i class="fa-solid fa-magnifying-glass-plus"></i> View</div>
+                </div>
+              </button>
+              <div class="mt-3 flex flex-wrap gap-2">${tagBadges}</div>
+            </div>
+          `;
+        }).join("");
+
+        item.innerHTML = `
+          <div class="glass tech-border rounded-2xl p-5 md:p-6">
+            <div class="flex items-center justify-between gap-3">
+              <h2 class="text-2xl font-extrabold dark:text-white text-gray-900">${year}</h2>
+              <span class="text-xs font-mono text-space-accent bg-space-accent/10 px-2 py-1 rounded">${yearItems.length} item(s)</span>
+            </div>
+            ${listHtml}
+          </div>
+        `;
+
+        const openButtons = item.querySelectorAll("button[data-open-image='1']");
+        openButtons.forEach((btn, i) => {
+          btn.addEventListener("click", () => openLightbox(yearItems[i]));
+        });
+        wrap.appendChild(item);
+      });
+      observeReveals();
+    }
+
+    // =========================
+    // Lightbox & Stats
+    // =========================
+    function openLightbox(cert){
+      const lb = $("lightbox");
+      const img = $("lightboxImg");
+      $("lbTitle").textContent = cert.title || "";
+      $("lbDate").textContent = prettyDate(cert.date);
+      $("lbTags").textContent = (cert.tags || []).join(", ");
+      $("lbOpenNew").href = cert.image || "#";
+      img.src = cert.image || "";
+      img.alt = cert.title || "Certificate";
+      lb.classList.remove("hidden");
+      requestAnimationFrame(() => {
+        img.classList.remove("scale-95", "opacity-0");
+        img.classList.add("scale-100", "opacity-100");
+      });
+    }
+
+    function closeLightbox(){
+      const lb = $("lightbox");
+      const img = $("lightboxImg");
+      img.classList.remove("scale-100", "opacity-100");
+      img.classList.add("scale-95", "opacity-0");
+      setTimeout(() => lb.classList.add("hidden"), 200);
+    }
+    $("closeLb").addEventListener("click", closeLightbox);
+    $("lightbox").addEventListener("click", (e) => { if (e.target === $("lightbox")) closeLightbox(); });
+
+    function openStats(){
+      applyFilters();
+      $("statsModal").classList.remove("hidden");
+      $("statsModal").classList.add("flex");
+      rebuildChart(lastFilteredItems);
+    }
+    function closeStats(){
+      $("statsModal").classList.add("hidden");
+      $("statsModal").classList.remove("flex");
+    }
+    $("statsBtn").addEventListener("click", openStats);
+    $("closeStats").addEventListener("click", closeStats);
+    $("statsModal").addEventListener("click", (e) => { if (e.target === $("statsModal")) closeStats(); });
+
+    function rebuildChart(items){
+      const type = ($("chartType")?.value) || "bar";
+      const ctx = document.getElementById("yearChart").getContext("2d");
+      if (yearChartInstance) yearChartInstance.destroy();
+      
+      const gridColor = "rgba(255,255,255,0.08)";
+      const tickColor = "rgba(255,255,255,0.75)";
+
+      if (type === "pie") {
+        let selectedTagSet = null;
+        try {
+          const state = getActiveState();
+          if (Array.isArray(state.tags) && !state.tags.includes("All")) selectedTagSet = new Set(state.tags);
+        } catch (e) { selectedTagSet = null; }
+
+        const tagCounts = new Map();
+        items.forEach(c => {
+          (c.tags || []).forEach(t => {
+            if (selectedTagSet && !selectedTagSet.has(t)) return;
+            tagCounts.set(t, (tagCounts.get(t) || 0) + 1);
+          });
+        });
+        const labels = Array.from(tagCounts.keys()).sort((a,b)=>a.localeCompare(b));
+        const data = labels.map(l => tagCounts.get(l));
+
+        yearChartInstance = new Chart(ctx, {
+          type: "pie",
+          data: { labels, datasets: [{ label: "Tags", data }] },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { labels: { color: tickColor } }, tooltip: { enabled: true } }
+          }
+        });
+        return;
+      }
+
+      const counts = new Map();
+      items.forEach(c => {
+        const y = yearOf(c.date) || "—";
+        counts.set(y, (counts.get(y) || 0) + 1);
+      });
+      const labels = Array.from(counts.keys()).sort((a,b)=>{
+        if (a === "—") return 1; if (b === "—") return -1;
+        return Number(a) - Number(b);
+      });
+      const data = labels.map(l => counts.get(l));
+
+      yearChartInstance = new Chart(ctx, {
+        type: (type === "line") ? "line" : "bar",
+        data: { labels, datasets: [{ label: "Certificates", data, tension: 0.25, fill: false }] },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { labels: { color: tickColor } }, tooltip: { enabled: true } },
+          scales: {
+            x: { ticks: { color: tickColor }, grid: { color: gridColor } },
+            y: { ticks: { color: tickColor, precision: 0 }, grid: { color: gridColor }, beginAtZero: true }
+          }
+        }
+      });
+    }
+
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape"){
+        if (!$("lightbox").classList.contains("hidden")) closeLightbox();
+        if (!$("statsModal").classList.contains("hidden")) closeStats();
+      }
+    });
+
+    ["searchInput","yearSelect","sortSelect"].forEach(id => {
+      $(id).addEventListener("input", applyFilters);
+      $(id).addEventListener("change", applyFilters);
+    });
+
+    $("clearBtn").addEventListener("click", () => {
+      $("searchInput").value = "";
+      $("yearSelect").value = "all";
+      $("sortSelect").value = "newest";
+      activeTags = new Set(["All"]);
+      syncTagButtons();
+      applyFilters();
+    });
+
+    $("gridViewBtn").addEventListener("click", () => setActiveView("grid"));
+    $("timelineViewBtn").addEventListener("click", () => setActiveView("timeline"));
+    $("chartType").addEventListener("change", () => rebuildChart(lastFilteredItems));
+
+    // =========================
+    // FIX 2: Canvas Loading
+    // =========================
+    // We run initCanvas() immediately to prevent the white flash
+    const canvas = document.getElementById('canvas-container');
+    const ctx = canvas.getContext('2d');
+    let width, height, stars = [];
+
+    function initCanvas(){
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+      stars = [];
+      for(let i=0;i<110;i++){
+        stars.push({
+          x: Math.random()*width, y: Math.random()*height,
+          r: Math.random()*2, dx:(Math.random()-0.5)*0.5, dy:(Math.random()-0.5)*0.5,
+        });
+      }
+    }
+
+    function drawStars(){
+      ctx.clearRect(0,0,width,height);
+      ctx.strokeStyle = document.documentElement.classList.contains('dark') ? 'rgba(0,240,255,0.10)' : 'rgba(0,0,0,0.05)';
+      ctx.lineWidth = 1;
+      for(let i=0;i<stars.length;i++){
+        for(let j=i+1;j<stars.length;j++){
+          const dx = stars[i].x - stars[j].x;
+          const dy = stars[i].y - stars[j].y;
+          const dist = Math.sqrt(dx*dx + dy*dy);
+          if(dist < 110){
+            ctx.beginPath(); ctx.moveTo(stars[i].x, stars[i].y);
+            ctx.lineTo(stars[j].x, stars[j].y); ctx.stroke();
+          }
+        }
+      }
+      ctx.fillStyle = document.documentElement.classList.contains('dark') ? '#ffffff' : '#1f2937';
+      stars.forEach(s => {
+        ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2); ctx.fill();
+        s.x += s.dx; s.y += s.dy;
+        if(s.x < 0) s.x = width; if(s.x > width) s.x = 0;
+        if(s.y < 0) s.y = height; if(s.y > height) s.y = 0;
+      });
+      requestAnimationFrame(drawStars);
+    }
+
+    // Run immediately, don't wait for load
+    initCanvas();
+    drawStars();
+
+    window.addEventListener("resize", initCanvas);
+    window.addEventListener("load", () => {
+      // Re-run setup just in case DOM shifted, but canvas is already running
+      populateYears();
+      buildTagButtons();
+      setActiveView("grid");
+      initRevealObserver();
+      applyFilters();
+    });
+  </script>
+  <script src="../static/utils.js"></script>
+</body>
+</html>
