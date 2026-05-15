@@ -177,13 +177,6 @@ When downloading/printing the CV (`template/cv.html`):
 - Styles optimized for printing
 - Press Ctrl+P or use browser's print function
 
-### Data Management with edit.html
-- **Separate admin interface** (not linked from portfolio)
-- Add, edit, delete items with forms
-- Export data as JSON
-- Import data from JSON
-- Visual preview of all items
-
 ### Responsive Design
 - Mobile-first approach
 - Works on all devices
