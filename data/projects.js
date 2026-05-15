@@ -19,21 +19,6 @@ const PROJECTS = [
   },
   {
     id: 2,
-    title: "Mapping-Based Navigation — ANN-Controlled Mobile Robot",
-    date: "2025-05-15",
-    tags: ["Robotics", "AI", "Embedded Systems"],
-    stack: ["Arduino (C/C++)", "ANN", "A* Algorithm", "Dijkstra's", "Robotics"],
-    description: "Physical mobile robot using Artificial Neural Network (ANN) for camera-based environment scanning and real-time 8×8 grid map construction. Implemented Dijkstra's algorithm and A* (Manhattan heuristic) for optimal path planning. Achieved >90% path completion accuracy in controlled indoor testing.",
-    image: "images/projects/1.jpeg",
-    demoUrl: "#",
-    codeUrl: "#",
-    icon: "fa-solid fa-robot",
-    badge: "Robotics Course",
-    badgeColor: "purple",
-    featured: false
-  },
-  {
-    id: 3,
     title: "Green Balance — Oil Detection & Bio-Response Maritime System",
     date: "2026-02-15",
     tags: ["Web", "IoT", "Hackathon", "Dashboard"],
@@ -48,7 +33,7 @@ const PROJECTS = [
     featured: true
   },
   {
-    id: 4,
+    id: 3,
     title: "Luqma (لُقمة) — National Platform for Sustainable Food",
     date: "2024-05-03",
     tags: ["Web", "Arabic RTL", "Gamification"],
@@ -63,7 +48,7 @@ const PROJECTS = [
     featured: false
   },
   {
-    id: 5,
+    id: 4,
     title: "Calisthenics RPG — Gamified Skill Tree Progression",
     date: "2025 - Now",
     tags: ["Web", "UI/UX", "Arabic RTL", "In Development"],
@@ -75,6 +60,126 @@ const PROJECTS = [
     icon: "fa-solid fa-dumbbell",
     badge: "In Development",
     badgeColor: "gray",
+    featured: false
+  },
+  {
+    id: 5,
+    title: "Hikaya (حكاية) — Interactive Arabic Science Stories Platform",
+    date: "2025-04-20",
+    tags: ["Web", "Arabic RTL", "Education", "Gamification"],
+    stack: ["HTML/CSS/JS", "PDF Viewer", "Canvas API", "Arabic Fonts"],
+    description: "Arabic educational web platform transforming Omani school science curriculum (Grades 5–12) into interactive story-based lessons with characters Salma and Salem. Features achievements system, badges, reading streaks, weekly challenges, and progress tracking. Supporting contributor for FYP.",
+    image: "images/projects/12.png",
+    demoUrl: "#",
+    codeUrl: "https://osama-alrawahi.github.io/hikaya",
+    icon: "fa-solid fa-book-open",
+    badge: "Education · FYP Support",
+    badgeColor: "purple",
+    featured: false
+  },
+  {
+    id: 6,
+    title: "Mapping-Based Navigation — ANN-Controlled Mobile Robot",
+    date: "2025-05-15",
+    tags: ["Robotics", "AI", "Embedded Systems"],
+    stack: ["Arduino (C/C++)", "ANN", "A* Algorithm", "Dijkstra's", "Robotics"],
+    description: "Physical mobile robot using Artificial Neural Network (ANN) for camera-based environment scanning and real-time 8×8 grid map construction. Implemented Dijkstra's algorithm and A* (Manhattan heuristic) for optimal path planning. Achieved >90% path completion accuracy in controlled indoor testing.",
+    image: "images/projects/1.jpeg",
+    demoUrl: "#",
+    codeUrl: "#",
+    icon: "fa-solid fa-robot",
+    badge: "Robotics Course",
+    badgeColor: "purple",
+    featured: false
+  },
+  {
+    id: 7,
+    title: "Smart Robotic Waste-Sorting Basket",
+    date: "2018",
+    tags: ["Robotics", "IoT", "Embedded Systems", "Social Impact"],
+    stack: ["Microcontroller", "Servo Motors", "Proximity Sensors", "Audio Module"],
+    description: "Automated waste-sorting basket with voice interaction that greets users in Arabic and sorts waste by material type (plastic, glass, metal, paper). Features automatic lid opening, aromatic spray release, and portable design on lockable wheels. Inspired by Islamic values around cleanliness.",
+    image: "images/projects/8.jpg",
+    demoUrl: "#",
+    codeUrl: "#",
+    icon: "fa-solid fa-recycle",
+    badge: "Early Project",
+    badgeColor: "green",
+    featured: false
+  },
+  {
+    id: 8,
+    title: "Sakhar — Humanoid Social Robot",
+    date: "2019",
+    tags: ["Robotics", "AI", "IoT", "Voice Recognition"],
+    stack: ["Microcontroller", "Servo Motors", "Bluetooth/WiFi", "Voice AI", "IoT"],
+    description: "Humanoid robot with natural language communication, facial recognition, and smart home IoT integration. Features voice/Bluetooth/WiFi control, head/eye movement, customizable dialogue in any language, and companion app for owner control. Built during COVID-19 pandemic.",
+    image: "images/projects/6.jpg",
+    demoUrl: "#",
+    codeUrl: "#",
+    icon: "fa-solid fa-robot",
+    badge: "COVID-19 Era",
+    badgeColor: "blue",
+    featured: false
+  },
+  {
+    id: 9,
+    title: "Robotic Arm",
+    date: "2019",
+    tags: ["Robotics", "Embedded Systems", "Automation"],
+    stack: ["Microcontroller", "Servo Motors", "Mechanical Gripper"],
+    description: "Mechanical robotic arm designed for precise pick-and-place operations, replicating industrial factory work. Features multi-joint articulation with servo motors, stable base mounting, and controlled gripper for object manipulation. Built for hazardous or inaccessible environments.",
+    image: "images/projects/7.jpg",
+    demoUrl: "https://drive.google.com/file/d/1Cb8JgTyV80fDwxVEqfhXUaIEkcNXpKUZ/view",
+    codeUrl: "#",
+    icon: "fa-solid fa-hand-fist",
+    badge: "Early Project",
+    badgeColor: "gray",
+    featured: false
+  },
+  {
+    id: 10,
+    title: "شيفرة التاريخ (History Code) — Oman Heritage Puzzle Game",
+    date: "2020",
+    tags: ["Game Dev", "Education", "Canvas", "Bilingual"],
+    stack: ["HTML5 Canvas", "JavaScript", "Pixel Art", "CSS"],
+    description: "Canvas-based riddle/puzzle game about Oman's history with bilingual support (Arabic/English) and pixel art graphics. Players navigate historical riddles using keyboard controls to learn about Omani heritage and landmarks. Converted from Python to JavaScript.",
+    image: "images/projects/10.png",
+    demoUrl: "#",
+    codeUrl: "#",
+    icon: "fa-solid fa-landmark",
+    badge: "Top 200 · Youth Competition",
+    badgeColor: "yellow",
+    featured: false
+  },
+  {
+    id: 11,
+    title: "Smart Kid — Interactive Multiplication Learning App",
+    date: "2020",
+    tags: ["Education", "Game Dev", "Python"],
+    stack: ["Python", "Processing", "Interactive GUI"],
+    description: "Educational app teaching multiplication tables (1-9) through three modes: Learn (view tables), Training (practice with selected numbers), and Exam (randomized questions). Features real-time feedback with encouraging phrases to motivate young learners.",
+    image: "images/projects/11.png",
+    demoUrl: "#",
+    codeUrl: "#",
+    icon: "fa-solid fa-calculator",
+    badge: "Top 200 · Youth Competition",
+    badgeColor: "yellow",
+    featured: false
+  },
+  {
+    id: 12,
+    title: "Chat Bot — Animated Conversational AI",
+    date: "2020",
+    tags: ["AI", "Python", "Game Dev"],
+    stack: ["Python", "Processing", "NLP", "Animated GUI"],
+    description: "Interactive chatbot with animated character featuring blinking eyes, moving mouth, and speech bubbles. Includes color-changing functionality (blue, red, green, random), WiFi quality indicator, and dictionary-based keyword matching for contextual responses with personality.",
+    image: "images/projects/9.png",
+    demoUrl: "#",
+    codeUrl: "#",
+    icon: "fa-solid fa-comments",
+    badge: "Top 200 · Youth Competition",
+    badgeColor: "yellow",
     featured: false
   }
 ];
@@ -95,5 +200,17 @@ const PROJECT_TAGS = [
   "Arabic RTL",
   "Gamification",
   "UI/UX",
-  "In Development"
+  "In Development",
+  "Education",
+  "Game Dev",
+  "Python",
+  "Canvas",
+  "Bilingual",
+  "Voice Recognition",
+  "Social Impact",
+  "Automation",
+  "NLP"
 ];
+
+// Optional: Export for use in modules
+// export { PROJECTS, PROJECT_TAGS };
