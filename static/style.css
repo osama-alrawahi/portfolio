@@ -327,21 +327,38 @@ body.modal-open { overflow: hidden; }
   html { scroll-behavior: auto; }
 }
 
-/* ---------- Print (CV) ---------- */
+/* ---------- ATS CV (print only) ----------
+   The web CV (.cv-page) is for the screen. Printing / "Save as PDF" swaps it for
+   .cv-ats: one column, standard headings, plain text, no icons or colours. */
+.cv-ats { display: none; }
+
 @media print {
-  @page { margin: 14mm; }
+  @page { size: A4; margin: 12mm 14mm; }
   html, body { background: #fff !important; }
-  #canvas-container, .site-nav, .site-footer, .no-print { display: none !important; }
+  #canvas-container, .site-nav, .site-footer, .cv-page { display: none !important; }
   main { padding: 0 !important; }
-  .glass { background: #fff !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; padding: 0 !important; }
-  .cv-page, .cv-page * { color: #1C1C2E !important; }
-  .cv-page a { text-decoration: none; }
-  .cv-page .cv-heading { border-color: #107860 !important; font-size: 1rem; }
-  .cv-page .cv-heading i, .cv-page .cv-entry-org, .cv-page .text-space-accent { color: #107860 !important; }
-  .cv-page .cv-bullets li::marker { color: #107860; }
-  .cv-page .chip { background: #E8F4F0 !important; border-color: #E8F4F0 !important; color: #107860 !important; }
-  .cv-page .badge { border-color: #999 !important; background: #fff !important; }
-  .cv-entry, .cv-section > div { break-inside: avoid; }
+
+  .cv-ats {
+    display: block;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10pt;
+    line-height: 1.3;
+    color: #000;
+  }
+  .cv-ats a { color: #000; text-decoration: none; }
+  .cv-ats h1 { font-size: 18pt; font-weight: 700; margin: 0; }
+  .cv-ats .ats-headline { font-size: 10.5pt; margin: 2pt 0 4pt; }
+  .cv-ats .ats-contact { margin: 0; }
+  .cv-ats h2 {
+    font-size: 11pt; font-weight: 700; margin: 8pt 0 3pt;
+    padding-bottom: 2pt; border-bottom: 1px solid #000;
+    break-after: avoid; page-break-after: avoid;
+  }
+  .cv-ats h3 { font-size: 10pt; font-weight: 700; margin: 0; }
+  .cv-ats p { margin: 0; }
+  .cv-ats .ats-entry { margin-bottom: 5pt; break-inside: avoid; page-break-inside: avoid; }
+  .cv-ats ul { list-style: disc; margin: 2pt 0 0; padding-left: 14pt; }
+  .cv-ats li { margin-bottom: 1pt; }
 }
 
 /* ---------- Editor tabs ---------- */
