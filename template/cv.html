@@ -34,9 +34,12 @@
               <li><a href="https://osama-alrawahi.github.io/portfolio/" target="_blank" rel="noopener" class="hover:text-space-accent"><i class="fas fa-globe mr-2 text-space-accent"></i>osama-alrawahi.github.io/portfolio</a></li>
             </ul>
           </div>
-          <button type="button" onclick="window.print()" class="btn btn-outline btn-sm no-print self-start whitespace-nowrap">
-            <i class="fas fa-print"></i> Print / Save as PDF
-          </button>
+          <div class="self-start md:text-right">
+            <button id="downloadCv" type="button" class="btn btn-outline btn-sm whitespace-nowrap">
+              <i class="fas fa-download"></i> Download CV (PDF)
+            </button>
+            <p class="text-xs text-gray-500 mt-2 max-w-[15rem]">ATS-friendly plain version. Choose "Save as PDF" in the print dialog.</p>
+          </div>
         </header>
 
         <!-- Summary -->
@@ -222,9 +225,142 @@
           </ul>
         </section>
       </article>
+
+      <!-- ATS version: hidden on screen, printed / saved as PDF instead of the styled CV above.
+           Keep it in sync when you update the CV. -->
+      <article class="cv-ats" aria-hidden="true">
+        <h1>Osama Al-Rawahi</h1>
+        <p class="ats-headline">Computer Science Student (Intelligent Systems &amp; Data Science) | AI, Computer Vision, Robotics &amp; IoT</p>
+        <p class="ats-contact">Samail, Oman | +968 71174193 | osama.mohd.alrawahi@gmail.com</p>
+        <p class="ats-contact">LinkedIn: linkedin.com/in/osama-al-rawahi-06651a287 | GitHub: github.com/osama-alrawahi</p>
+        <p class="ats-contact">Portfolio: osama-alrawahi.github.io/portfolio</p>
+
+        <h2>Summary</h2>
+        <p>
+          Final-year Computer Science student at Sultan Qaboos University specializing in Intelligent Systems and Data Science.
+          Builds real-time AI and computer vision systems, autonomous mobile robots and IoT/embedded platforms using Python,
+          PyTorch, OpenCV and Arduino. Paid AI and drone instructor and technical judge, and winner of national competitions
+          including 1st place in the AI Drone Competition. Seeking internship and graduate roles in machine learning,
+          computer vision or robotics.
+        </p>
+
+        <h2>Education</h2>
+        <div class="ats-entry">
+          <h3>Bachelor of Science in Computer Science (Intelligent Systems &amp; Data Science) | Expected 2026</h3>
+          <p>Sultan Qaboos University, Muscat, Oman</p>
+          <ul>
+            <li>Final Year Project: JISSR-OM, a real-time Omani Sign Language recognition and translation system.</li>
+            <li>Relevant coursework: Machine Learning &amp; Artificial Intelligence, Data Science, Algorithms &amp; Data Structures,
+              Mobile Robotics, Embedded Systems, Smart Systems, Software Engineering, Database Systems, Operating Systems, Web Development.</li>
+          </ul>
+        </div>
+
+        <h2>Technical Skills</h2>
+        <ul class="ats-list">
+          <li><strong>Programming Languages:</strong> Python, C, C++, Java, JavaScript, Assembly, Visual Basic</li>
+          <li><strong>Machine Learning &amp; AI:</strong> PyTorch, Deep Learning, Transformers, Artificial Neural Networks (ANN), Computer Vision, Pose Estimation (RTMPose), Image Segmentation</li>
+          <li><strong>Data &amp; Libraries:</strong> NumPy, OpenCV, Pillow, CUDA</li>
+          <li><strong>Web Development:</strong> Flask, Flask-SocketIO, HTML, CSS, JavaScript, Node.js, Leaflet.js</li>
+          <li><strong>Robotics &amp; Embedded Systems:</strong> Arduino, Raspberry Pi, PLC Programming, Servo Motors, Sensors, IoT, Electronics Design</li>
+          <li><strong>Algorithms:</strong> A* Search, Dijkstra's Algorithm, Path Planning, Algorithm Design</li>
+          <li><strong>Tools &amp; Platforms:</strong> Linux, Git, GitHub</li>
+        </ul>
+
+        <h2>Experience</h2>
+        <div class="ats-entry">
+          <h3>AI &amp; Drone Instructor | 2025 – 2026</h3>
+          <p>Oman AI Drone Competition (3rd Edition), Makeen, Sultan Qaboos University and MTCIT</p>
+          <ul>
+            <li>Taught autonomous flight, computer vision and real-time decision-making to competition participants.</li>
+            <li>Trained teams to apply machine learning to drone path planning, object detection and autonomous control.</li>
+            <li>Served as technical judge, evaluating projects, scoring implementation quality and giving structured feedback.</li>
+            <li>Delivered hands-on sessions across multiple competition phases in coordination with Makeen, SQU and MTCIT.</li>
+          </ul>
+        </div>
+
+        <h2>Projects</h2>
+        <div class="ats-entry">
+          <h3>JISSR-OM: Omani Sign Language Recognition &amp; Translation (Final Year Project) | 2025 – 2026</h3>
+          <p>ML Engineer and Full-Stack Developer, team of 4 | github.com/osama-alrawahi/JSSIR-OM</p>
+          <ul>
+            <li>Built a real-time web application that translates Omani Sign Language from live video into Arabic text at sentence level, not only isolated words.</li>
+            <li>Integrated UniSign, a transformer-based model, with RTMPose/RTMLib whole-body pose estimation; processed frames with OpenCV, Pillow and NumPy.</li>
+            <li>Developed a Flask and Flask-SocketIO backend for low-latency streaming with CUDA-accelerated PyTorch inference.</li>
+            <li>Implemented avatar animation for reverse sign-to-video playback and built the HTML, CSS and JavaScript front end.</li>
+          </ul>
+        </div>
+        <div class="ats-entry">
+          <h3>Green Balance: Oil Detection &amp; Bio-Response Maritime System | 2026</h3>
+          <p>Rubban Hackathon, 3rd Place | Drone and Robot Algorithm Developer and Full-Stack Developer, team of 4</p>
+          <ul>
+            <li>Built a maritime monitoring dashboard for Sohar Port that detects oil-leaking vessels and deploys oil-eating bacteria from sea floats.</li>
+            <li>Engineered drone automation that restocks bacteria floats when supplies run low, creating a closed-loop response system.</li>
+            <li>Developed GPS-based real-time ship tracking with Leaflet.js, colour-coded status for ships, floats and drones, and a reporting system.</li>
+          </ul>
+        </div>
+        <div class="ats-entry">
+          <h3>Mapping-Based Navigation: ANN-Controlled Mobile Robot | 2025</h3>
+          <p>Mobile Robotics course project, team of 2</p>
+          <ul>
+            <li>Designed a mobile robot that uses an Artificial Neural Network for camera-based scanning and real-time 8×8 grid map construction.</li>
+            <li>Implemented Dijkstra's algorithm and A* search (Manhattan heuristic) for path planning; A* consistently navigated faster.</li>
+            <li>Programmed real-time obstacle avoidance with proximity sensors and designed the robot's electronics and mechanical layout.</li>
+            <li>Achieved over 90% path completion accuracy in controlled indoor testing and documented results in a formal academic report.</li>
+          </ul>
+        </div>
+        <div class="ats-entry">
+          <h3>Additional Projects</h3>
+          <ul>
+            <li>Hikaya: Arabic web platform that turns the Omani school science curriculum into interactive story-based lessons (2025).</li>
+            <li>Luqma: Arabic web platform that reduces food waste through farm discovery, freshness tracking and recipe suggestions (2024).</li>
+            <li>Calisthenics RPG: Arabic web app that turns training into a skill tree of 100+ ranked exercises (in development).</li>
+          </ul>
+        </div>
+
+        <h2>Awards</h2>
+        <ul class="ats-list">
+          <li>1st Place (AI track) and 3rd Place (RC track), AI Drone Competition, Makeen, SQU and MTCIT, 2024</li>
+          <li>3rd Place, Rubban Hackathon, Sohar Port and Freezone, 2026</li>
+          <li>3rd Place, Internet of Things Competition, Engineering Village, 2024</li>
+          <li>3rd Place, 100 Arab Innovators, North Al Sharqiyah Governorate, 2024</li>
+          <li>3rd Place, Sumo Robot Competition, Sultan Qaboos University, 2024</li>
+          <li>1st Place, C++ Programming, Code Academy, Sultan Qaboos University, 2018</li>
+          <li>Top 200, national youth programming competition (three entries), 2020</li>
+          <li>Hackathon participant: Vodafone Hackathon (2025), Awasr Sparkthon (2025), SAS Hackathon (2024)</li>
+        </ul>
+
+        <h2>Certifications &amp; Training</h2>
+        <ul class="ats-list">
+          <li>Deep Learning with PyTorch: Image Segmentation; Deep Learning with PyTorch: GridCAM, Coursera, 2026</li>
+          <li>Network Security (Cisco); Network Simulation (Cisco), Coursera, 2024</li>
+          <li>JSON and JavaScript, Coursera, 2024</li>
+          <li>Workshops: PLC Programming (IEEE, SQU, 2024), IoT Systems (2024), Linux (2024), Raspberry Pi (2023), Automation (2023),
+            Blockchain &amp; Crypto Mining (2021), Arduino (2021), Python (2020), C++ and Robotics (2018)</li>
+        </ul>
+
+        <h2>Leadership &amp; Activities</h2>
+        <ul class="ats-list">
+          <li>Leader, Free and Open-Source Society (FO3S), Sultan Qaboos University; delivered a Python presentation (2024)</li>
+          <li>Member, Computer Science Group, Sultan Qaboos University; presenter at the CSG Forum (2025)</li>
+          <li>Member, Omani Inventors Union</li>
+          <li>Volunteer, Mechatronics Engineering Society, Sultan Qaboos University</li>
+        </ul>
+
+        <h2>Languages</h2>
+        <p>Arabic (native), English</p>
+      </article>
     </section>
   </main>
 
   <script src="../static/utils.js"></script>
+  <script>
+    // Download = print the ATS version; the suggested PDF file name comes from the page title.
+    document.getElementById('downloadCv').addEventListener('click', () => {
+      const pageTitle = document.title;
+      document.title = 'Osama_Al-Rawahi_CV';
+      window.addEventListener('afterprint', () => { document.title = pageTitle; }, { once: true });
+      window.print();
+    });
+  </script>
 </body>
 </html>
