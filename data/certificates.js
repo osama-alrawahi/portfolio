@@ -1,9 +1,10 @@
 // Certificates Data
-// Each certificate should have: title, date (YYYY-MM-DD), tags (array), image (path)
+// Fields: id, title, date (YYYY-MM-DD), tags (array), image (path from site root), organization
+// Optional: featured (shown on the home page), award (e.g. "3rd Place"), awardLevel ("gold" | "silver" | "bronze")
 
 const CERTIFICATES = [
   { id: 1, title: "Vodafone Hackathon", date: "2025-12-20", tags: ["Hackathon"], image: "images/certificates/71.jpg", organization: "SQU, Vodafone" },
-  { id: 2, title: "Awasr Sparkthon", date: "2025-02-26", tags: ["Hackathon"], image: "images/certificates/77.jpg", organization: "SQU, MCTE, Awasr" },
+  { id: 2, title: "Awasr Sparkthon", date: "2025-02-26", tags: ["Hackathon"], image: "images/certificates/77.jpg", organization: "SQU, MCTE, Awasr", featured: true },
   { id: 3, title: "CSG Forum Presentation", date: "2025-02-12", tags: ["Forum", "Presentation"], image: "images/certificates/76.jpg", organization: "SQU, CSG" },
   { id: 4, title: "Network Security - Cisco", date: "2024-12-18", tags: ["Security", "Network", "Cisco"], image: "images/certificates/72.jpg", organization: "Coursera" },
   { id: 5, title: "JSON & JavaScript", date: "2024-12-18", tags: ["Json", "JavaScript"], image: "images/certificates/73.jpg", organization: "Coursera" },
@@ -13,10 +14,10 @@ const CERTIFICATES = [
   { id: 9, title: "PLC Programming Workshop", date: "2024-10-20", tags: ["Workshop", "PLC", "tmkeen2"], image: "images/certificates/14.jpg", organization: "SQU, COE, IEEE" },
   { id: 10, title: "Science Week Event", date: "2024-10-20", tags: ["Event", "ScienceWeek"], image: "images/certificates/16.jpg", organization: "modgov, MTC" },
   { id: 11, title: "IoT Workshop", date: "2024-10-19", tags: ["Workshop", "IoT"], image: "images/certificates/17.jpg", organization: "EV" },
-  { id: 12, title: "AI Drone Competition", date: "2024-10-06", tags: ["Competition", "Drone", "AI"], image: "images/certificates/29.jpg", organization: "Makeen, SQU, MTCIT" },
+  { id: 12, title: "AI Drone Competition", date: "2024-10-06", tags: ["Competition", "Drone", "AI"], image: "images/certificates/29.jpg", organization: "Makeen, SQU, MTCIT", featured: true, award: "1st & 3rd Place", awardLevel: "gold" },
   { id: 13, title: "SAS Hackathon", date: "2024-05-04", tags: ["Hackathon", "SAS"], image: "images/certificates/15.jpg", organization: "MTCIT" },
   { id: 14, title: "Sumo Robot Competition", date: "2024-04-15", tags: ["Competition", "Sumo", "Robot"], image: "images/certificates/47.jpg", organization: "SQU, MCTE" },
-  { id: 15, title: "Sumo Robot 3rd Place", date: "2024-04-15", tags: ["Competition", "Sumo", "Robot"], image: "images/certificates/51.jpg", organization: "SQU, MCTE" },
+  { id: 15, title: "Sumo Robot 3rd Place", date: "2024-04-15", tags: ["Competition", "Sumo", "Robot"], image: "images/certificates/51.jpg", organization: "SQU, MCTE", award: "3rd Place", awardLevel: "bronze" },
   { id: 16, title: "Python Presentation", date: "2024-04-12", tags: ["Python", "Presentation"], image: "images/certificates/75.jpg", organization: "SQU, CIRC, FO3S" },
   { id: 17, title: "Raspberry Pi Workshop", date: "2023-11-20", tags: ["Workshop", "RaspberryPi"], image: "images/certificates/1.jpg", organization: "SQU, CIRC, FO3S" },
   { id: 18, title: "Automation Workshop", date: "2023-03-22", tags: ["Workshop", "Automation"], image: "images/certificates/43.jpg", organization: "SQU, ILC" },
@@ -32,7 +33,7 @@ const CERTIFICATES = [
   { id: 28, title: "Performance Evaluation", date: "2019-02-20", tags: ["Evaluation", "Performance"], image: "images/certificates/62.jpg", organization: "School, EduDakGov, EduGov" },
   { id: 29, title: "Competition", date: "2018-11-05", tags: ["Competition"], image: "images/certificates/27.jpg", organization: "MoiGov" },
   { id: 30, title: "C++ Workshop", date: "2018-08-17", tags: ["Workshop", "C"], image: "images/certificates/39.jpg", organization: "SQU, CodeAcademy" },
-  { id: 31, title: "C++ Workshop - 1st Place", date: "2018-08-16", tags: ["Workshop", "C"], image: "images/certificates/2.jpg", organization: "SQU, CodeAcademy" },
+  { id: 31, title: "C++ Workshop - 1st Place", date: "2018-08-16", tags: ["Workshop", "C"], image: "images/certificates/2.jpg", organization: "SQU, CodeAcademy", award: "1st Place", awardLevel: "gold" },
   { id: 32, title: "Robot & C++ Workshop", date: "2018-08-16", tags: ["Workshop", "Robot", "C"], image: "images/certificates/48.jpg", organization: "SQU, CCS" },
   { id: 33, title: "Quran Certificate", date: "2018-08-08", tags: ["Quran"], image: "images/certificates/65.jpg", organization: "ShababAlwadiTeam" },
   { id: 34, title: "Quran Certificate", date: "2018-04-11", tags: ["Quran"], image: "images/certificates/41.jpg", organization: "School, EduDakGov, EduGov" },
@@ -77,15 +78,15 @@ const CERTIFICATES = [
   { id: 73, title: "Performance Evaluation", date: "2010-03-17", tags: ["Evaluation", "Performance"], image: "images/certificates/49.jpg", organization: "School, EduDakGov, EduGov" },
   { id: 74, title: "Quran Certificate", date: "2009-01-01", tags: ["Quran"], image: "images/certificates/26.jpg", organization: "AlManarSchool, AlAqsaSchool" },
   { id: 75, title: "Performance Evaluation", date: "2008-01-01", tags: ["Evaluation", "Performance"], image: "images/certificates/30.jpg", organization: "AhlAlquranSchool, EduGov" },
-  { id: 76, title: "Rubban Hackathon", date: "2026-02-15", tags: ["Hackathon"], image: "images/certificates/78.jpg", organization: "Sohar Port and Freezone, Madaar" },
-  { id: 77, title: "Deep Learning with by PyTorch: Image Segmentation", date: "2026-03-7", tags: ["Image Segmentation", "Deep Learning", "PyTorch"], image: "images/certificates/80.jpg", organization: "Coursera" },
-  { id: 78, title: "Deep Learning with by PyTorch: GridCAM", date: "2026-04-11", tags: ["GridCAM", "Deep Learning", "PyTorch"], image: "images/certificates/79.jpg", organization: "Coursera" }
+  { id: 76, title: "Rubban Hackathon", date: "2026-02-15", tags: ["Hackathon"], image: "images/certificates/78.jpg", organization: "Sohar Port and Freezone, Madaar", featured: true, award: "3rd Place", awardLevel: "bronze" },
+  { id: 77, title: "Deep Learning with PyTorch: Image Segmentation", date: "2026-03-07", tags: ["Image Segmentation", "Deep Learning", "PyTorch"], image: "images/certificates/80.jpg", organization: "Coursera" },
+  { id: 78, title: "Deep Learning with PyTorch: GridCAM", date: "2026-04-11", tags: ["GridCAM", "Deep Learning", "PyTorch"], image: "images/certificates/79.jpg", organization: "Coursera" }
 ];
 
-// All available tags (for filtering)
+// Tags shown as filter buttons on the certificates page ("All" is added automatically)
 const CERTIFICATE_TAGS = [
-  "All", "AI", "Automation", "Competition", "Evaluation",
+  "AI", "Automation", "Competition", "Evaluation",
   "Event", "Hackathon", "Inventor", "IoT", "Performance",
   "Quran", "Robot", "Workshop", "Python", "C", "Cisco",
-  "Network", "Security", "Presentation", "Math"
+  "Network", "Security", "Presentation", "Math", "Deep Learning"
 ];

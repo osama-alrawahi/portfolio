@@ -1,4 +1,5 @@
-// GALLERY ITEMS Data
+// Gallery Data
+// Fields: id, title, category, image (path from site root), date (free text), description
 const GALLERY_ITEMS = [
   {
     "id": 1,
@@ -30,7 +31,7 @@ const GALLERY_ITEMS = [
     "category": "events",
     "image": "images/gallery/8.jpeg",
     "date": "2025 - 2026",
-    "description": "instractor"
+    "description": "Instructor"
   },
   {
     "id": 5,
@@ -38,7 +39,7 @@ const GALLERY_ITEMS = [
     "category": "events",
     "image": "images/gallery/3.jpeg",
     "date": "2025 - 2026",
-    "description": "flying with Drone"
+    "description": "Flying the drone"
   },
   {
     "id": 6,
@@ -48,4 +49,13 @@ const GALLERY_ITEMS = [
     "date": "2024",
     "description": ""
   }
+];
+
+// Categories for the filter dropdown ("All" is added automatically)
+const GALLERY_CATEGORIES = [
+  { value: "projects", label: "Projects" },
+  { value: "competitions", label: "Competitions" },
+  { value: "workshops", label: "Workshops" },
+  { value: "events", label: "Events" },
+  { value: "certificates", label: "Certificates" }
 ];

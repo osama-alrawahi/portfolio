@@ -1,5 +1,7 @@
 // Projects Data
-// Each project should have: id, title, date, tags, stack, description, image, demoUrl, codeUrl, icon
+// Fields: id, title, date ("YYYY-MM-DD", "YYYY" or "2025 - Now"), tags, stack, description,
+// image (path from site root), demoUrl, codeUrl ("#" = none), icon (Font Awesome class),
+// badge, badgeColor (green | yellow | purple | blue | gray | red), featured (shown on the home page)
 
 const PROJECTS = [
   {
@@ -184,9 +186,8 @@ const PROJECTS = [
   }
 ];
 
-// All available tags (for filtering)
+// Tags shown as filter buttons on the projects page ("All" is added automatically)
 const PROJECT_TAGS = [
-  "All",
   "AI",
   "Computer Vision",
   "Robotics",
@@ -211,6 +212,3 @@ const PROJECT_TAGS = [
   "Automation",
   "NLP"
 ];
-
-// Optional: Export for use in modules
-// export { PROJECTS, PROJECT_TAGS };
