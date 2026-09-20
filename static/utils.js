@@ -1,262 +1,343 @@
-// Utility Functions for Portfolio
+/* ==========================================================
+   Portfolio shared runtime — loaded by every page.
+   Renders the navbar, footer and starfield background, and
+   exposes helpers on window.Site for the page scripts.
 
-// Load profile images from data file
-function loadProfileImages() {
-  if (typeof PROFILE_IMAGES !== 'undefined' && PROFILE_IMAGES.length > 0) {
-    return PROFILE_IMAGES.map(img => `images/profile/${img}`);
-  }
-  
-  // Fallback if data file not loaded
-  console.warn('PROFILE_IMAGES not found. Make sure data/profile-images.js is loaded.');
-  return [];
-}
+   Each page only needs:
+     <body data-root="" data-page="home">      (index.html)
+     <body data-root="../" data-page="cv">     (template/*.html)
+   ========================================================== */
+(function () {
+  'use strict';
 
-// Initialize profile avatar with rotation
-function initProfileAvatar() {
-  const avatarInner = document.querySelector('.avatar-inner');
-  if (!avatarInner) return;
-  
-  const imagePaths = loadProfileImages();
-  if (imagePaths.length === 0) {
-    showFallback();
-    return;
+  const body = document.body;
+  const ROOT = body.dataset.root || '';
+  const PAGE = body.dataset.page || '';
+
+  const NAV_ITEMS = [
+    { id: 'home', label: 'Home', href: 'index.html' },
+    { id: 'cv', label: 'CV', href: 'template/cv.html' },
+    { id: 'projects', label: 'Projects', href: 'template/projects.html' },
+    { id: 'certificates', label: 'Certificates', href: 'template/certificates.html' },
+    { id: 'gallery', label: 'Gallery', href: 'template/gallery.html' }
+  ];
+
+  const SOCIAL = [
+    { label: 'Email', icon: 'fas fa-envelope', href: 'mailto:osama.mohd.alrawahi@gmail.com' },
+    { label: 'GitHub', icon: 'fab fa-github', href: 'https://github.com/osama-alrawahi' },
+    { label: 'LinkedIn', icon: 'fab fa-linkedin', href: 'https://linkedin.com/in/osama-al-rawahi-06651a287' }
+  ];
+
+  /* ---------------- Helpers ---------------- */
+  const $ = (id) => document.getElementById(id);
+  const norm = (s) => (s == null ? '' : String(s)).trim().toLowerCase();
+  const asset = (path) => (!path || /^(https?:|data:|blob:)/.test(path) ? path || '' : ROOT + path);
+  const isLink = (url) => !!url && url !== '#';
+
+  function esc(value) {
+    return String(value == null ? '' : value)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
-  
-  let loadedImages = [];
-  let loadedCount = 0;
-  let totalImages = imagePaths.length;
-  
-  // Try to load each image
-  imagePaths.forEach((imagePath, index) => {
-    const img = document.createElement('img');
-    img.src = imagePath;
-    img.alt = `Profile ${index + 1}`;
-    img.className = 'avatar-image';
-    
-    img.onload = function() {
-      loadedCount++;
-      loadedImages.push(img);
-      avatarInner.appendChild(img);
-      
-      // Show first loaded image immediately
-      if (loadedImages.length === 1) {
-        img.classList.add('active');
+
+  // Accepts "2024-05-04", "2019", "2025 - Now", "2025 - 2026"
+  function dateValue(str) {
+    const s = String(str || '');
+    if (/^\d{4}-\d{1,2}-\d{1,2}$/.test(s)) {
+      const [y, m, d] = s.split('-').map(Number);
+      return new Date(y, m - 1, d).getTime();
+    }
+    const year = s.match(/\d{4}/);
+    return year ? new Date(Number(year[0]), 0, 1).getTime() : 0;
+  }
+
+  function yearOf(str) {
+    const m = String(str || '').match(/\d{4}/);
+    return m ? m[0] : '';
+  }
+
+  function prettyDate(str, opts) {
+    const s = String(str || '');
+    if (!/^\d{4}-\d{1,2}-\d{1,2}$/.test(s)) return s;
+    return new Date(dateValue(s)).toLocaleDateString('en-US', opts || { year: 'numeric', month: 'short', day: '2-digit' });
+  }
+
+  const byNewest = (a, b) => dateValue(b.date) - dateValue(a.date);
+
+  // Image with a built-in icon fallback (no external placeholder service)
+  function imgFrame(src, alt, frameClass, fallbackIcon, imgClass) {
+    return `<div class="img-frame ${frameClass || ''}">
+      <img src="${esc(asset(src))}" alt="${esc(alt)}" loading="lazy" class="${imgClass || ''}"
+           onerror="this.parentElement.classList.add('img-missing')">
+      <div class="img-fallback" aria-hidden="true"><i class="${esc(fallbackIcon || 'fa-solid fa-image')}"></i></div>
+    </div>`;
+  }
+
+  // Tag list for filter chips: preferred order first, only tags that are actually used
+  function tagList(items, preferred) {
+    const counts = new Map();
+    items.forEach((it) => (it.tags || []).forEach((t) => counts.set(t, (counts.get(t) || 0) + 1)));
+    let tags;
+    if (Array.isArray(preferred) && preferred.length) {
+      tags = preferred.filter((t) => t !== 'All' && counts.has(t));
+    } else {
+      tags = [...counts.keys()].sort((a, b) => counts.get(b) - counts.get(a) || a.localeCompare(b));
+    }
+    return ['All', ...tags];
+  }
+
+  // Multi-select tag chips. `active` is a Set; "All" clears the others.
+  function tagChips(container, tags, active, onChange) {
+    container.innerHTML = tags
+      .map((t) => `<button type="button" class="tag-chip" data-tag="${esc(t)}" aria-pressed="${active.has(t)}">${esc(t)}</button>`)
+      .join('');
+    const sync = () => container.querySelectorAll('[data-tag]').forEach((b) => b.setAttribute('aria-pressed', active.has(b.dataset.tag)));
+    container.onclick = (e) => {
+      const btn = e.target.closest('[data-tag]');
+      if (!btn) return;
+      const tag = btn.dataset.tag;
+      if (tag === 'All') { active.clear(); active.add('All'); }
+      else {
+        active.delete('All');
+        active.has(tag) ? active.delete(tag) : active.add(tag);
+        if (!active.size) active.add('All');
       }
-      
-      // Start rotation when we have multiple images loaded
-      if (loadedImages.length === 3) {
-        startAvatarRotation();
-      }
+      sync();
+      onChange();
     };
-    
-    img.onerror = function() {
-      console.warn(`Failed to load: ${imagePath}`);
-      loadedCount++;
-      
-      // If all images failed, show fallback
-      if (loadedCount >= totalImages && loadedImages.length === 0) {
-        showFallback();
-      }
+    return { reset() { active.clear(); active.add('All'); sync(); } };
+  }
+
+  /* ---------------- Modals ---------------- */
+  function openModal(modal) {
+    modal.classList.add('is-open');
+    body.classList.add('modal-open');
+    const focusTarget = modal.querySelector('[data-close-modal]') || modal;
+    focusTarget.focus({ preventScroll: true });
+  }
+
+  function closeModal(modal) {
+    if (!modal || !modal.classList.contains('is-open')) return;
+    modal.classList.remove('is-open');
+    if (!document.querySelector('.modal.is-open')) body.classList.remove('modal-open');
+    if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+    modal.dispatchEvent(new CustomEvent('modal:close'));
+  }
+
+  function wireModals() {
+    document.querySelectorAll('.modal').forEach((modal) => {
+      modal.setAttribute('role', 'dialog');
+      modal.setAttribute('aria-modal', 'true');
+      modal.tabIndex = -1;
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal || e.target.closest('[data-close-modal]')) closeModal(modal);
+      });
+    });
+  }
+
+  // Opens detail modals from links like "#project-3" (shareable, back-button friendly)
+  function hashRoute(prefix, open) {
+    const run = () => {
+      const m = location.hash.match(new RegExp('^#' + prefix + '-(\\d+)$'));
+      if (m) open(Number(m[1]));
     };
-  });
-}
-
-// Show fallback avatar
-function showFallback() {
-  const avatarInner = document.querySelector('.avatar-inner');
-  if (avatarInner) {
-    avatarInner.classList.add('show-fallback');
+    window.addEventListener('hashchange', run);
+    run();
   }
-}
 
-// Rotate avatar images
-function startAvatarRotation() {
-  const avatarImages = document.querySelectorAll('.avatar-image');
-  if (avatarImages.length <= 1) return;
-  
-  let currentIndex = 0;
-  
-  setInterval(() => {
-    if (avatarImages.length === 0) return;
-    
-    // Hide current
-    avatarImages[currentIndex].classList.remove('active');
-    
-    // Next image
-    currentIndex = (currentIndex + 1) % avatarImages.length;
-    
-    // Show next
-    avatarImages[currentIndex].classList.add('active');
-  }, 3000); // Rotate every 3 seconds
-}
+  /* ---------------- Statistics chart (projects + certificates) ---------------- */
+  let chart = null;
+  function renderStatsChart(canvas, items, type, label, selectedTags) {
+    if (typeof Chart === 'undefined') return;
+    if (chart) chart.destroy();
+    const tick = 'rgba(255,255,255,0.75)';
+    const grid = 'rgba(255,255,255,0.08)';
+    const legend = { labels: { color: tick } };
 
-// Starfield Canvas Animation
-function initStarfield() {
-  const canvas = document.getElementById('starfield-canvas');
-  if (!canvas) {
-    console.warn('Starfield canvas not found');
-    return;
+    if (type === 'pie') {
+      const only = selectedTags && !selectedTags.has('All') ? selectedTags : null;
+      const counts = new Map();
+      items.forEach((it) => (it.tags || []).forEach((t) => {
+        if (!only || only.has(t)) counts.set(t, (counts.get(t) || 0) + 1);
+      }));
+      const labels = [...counts.keys()].sort((a, b) => counts.get(b) - counts.get(a));
+      chart = new Chart(canvas, {
+        type: 'pie',
+        data: { labels, datasets: [{ label: 'Tags', data: labels.map((l) => counts.get(l)) }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { ...legend, position: 'right' } } }
+      });
+      return;
+    }
+
+    const counts = new Map();
+    items.forEach((it) => {
+      const y = yearOf(it.date) || '—';
+      counts.set(y, (counts.get(y) || 0) + 1);
+    });
+    const labels = [...counts.keys()].sort((a, b) => (a === '—') - (b === '—') || Number(a) - Number(b));
+    chart = new Chart(canvas, {
+      type: type === 'line' ? 'line' : 'bar',
+      data: {
+        labels,
+        datasets: [{ label, data: labels.map((l) => counts.get(l)), backgroundColor: 'rgba(0,240,255,0.5)', borderColor: '#00F0FF', tension: 0.25 }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend },
+        scales: {
+          x: { ticks: { color: tick }, grid: { color: grid } },
+          y: { ticks: { color: tick, precision: 0 }, grid: { color: grid }, beginAtZero: true }
+        }
+      }
+    });
   }
-  
-  const ctx = canvas.getContext('2d');
-  let width, height;
-  let stars = [];
 
-  function initCanvas() {
-    width = window.innerWidth;
-    height = window.innerHeight;
-    canvas.width = width;
-    canvas.height = height;
-    stars = [];
-    
-    const starCount = width < 768 ? 50 : 100; // Fewer stars on mobile
-    
-    for (let i = 0; i < starCount; i++) {
-      stars.push({
+  /* ---------------- Layout: background, navbar, footer ---------------- */
+  function renderChrome() {
+    const links = (cls) => NAV_ITEMS.map((item) =>
+      `<a href="${ROOT}${item.href}" class="nav-link ${cls}"${item.id === PAGE ? ' aria-current="page"' : ''}>${item.label}</a>`
+    ).join('');
+
+    body.insertAdjacentHTML('afterbegin', `
+      <div id="canvas-container" aria-hidden="true"><canvas id="starfield-canvas"></canvas></div>
+      <nav class="site-nav fixed top-0 inset-x-0 z-50 glass" aria-label="Main">
+        <div class="container mx-auto px-6 py-4">
+          <div class="flex justify-between items-center">
+            <a href="${ROOT}index.html" class="text-2xl font-bold tracking-tighter">
+              <span class="text-white">Osama</span> <span class="text-space-accent">Al-Rawahi</span>
+            </a>
+            <div class="hidden md:flex gap-6">${links('')}</div>
+            <button id="mobileMenuBtn" type="button" class="md:hidden text-white w-10 h-10 -mr-2"
+                    aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+              <i class="fas fa-bars text-xl"></i>
+            </button>
+          </div>
+          <div id="mobileMenu" class="hidden md:hidden mt-4 pb-2 space-y-1">${links('block py-2')}</div>
+        </div>
+      </nav>`);
+
+    body.insertAdjacentHTML('beforeend', `
+      <footer class="site-footer border-t border-gray-800 py-8 mt-10">
+        <div class="container mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500">
+          <p>&copy; ${new Date().getFullYear()} Osama Al-Rawahi</p>
+          <div class="flex gap-5">
+            ${SOCIAL.map((s) => `<a href="${s.href}" class="hover:text-space-accent transition" aria-label="${s.label}"${s.href.startsWith('http') ? ' target="_blank" rel="noopener"' : ''}><i class="${s.icon} text-lg"></i></a>`).join('')}
+          </div>
+        </div>
+      </footer>`);
+  }
+
+  function initMobileMenu() {
+    const btn = $('mobileMenuBtn');
+    const menu = $('mobileMenu');
+    const setOpen = (open) => {
+      menu.classList.toggle('hidden', !open);
+      btn.setAttribute('aria-expanded', open);
+      btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      btn.innerHTML = `<i class="fas ${open ? 'fa-xmark' : 'fa-bars'} text-xl"></i>`;
+    };
+    btn.addEventListener('click', (e) => { e.stopPropagation(); setOpen(menu.classList.contains('hidden')); });
+    document.addEventListener('click', (e) => { if (!menu.contains(e.target)) setOpen(false); });
+    window.addEventListener('resize', () => { if (window.innerWidth >= 768) setOpen(false); });
+    return setOpen;
+  }
+
+  function initStarfield() {
+    const canvas = $('starfield-canvas');
+    const ctx = canvas.getContext('2d');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const LINK_DIST = 120;
+    const MAX_LINKS = 3;
+    let width = 0, height = 0, stars = [];
+
+    function setup() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      const count = width < 768 ? 50 : 100;
+      stars = Array.from({ length: count }, () => ({
         x: Math.random() * width,
         y: Math.random() * height,
         r: Math.random() * 2,
         dx: (Math.random() - 0.5) * 0.5,
         dy: (Math.random() - 0.5) * 0.5
-      });
+      }));
     }
-  }
 
-  function drawStars() {
-    ctx.clearRect(0, 0, width, height);
-    
-    const connectionDistance = 120;
-    const maxConnectionsPerStar = 3; // Limit connections for performance
-    
-    // Draw connections (optimized)
-    ctx.strokeStyle = 'rgba(0, 240, 255, 0.1)';
-    ctx.lineWidth = 1;
-    
-    for (let i = 0; i < stars.length; i++) {
-      let connectionsCount = 0;
-      
-      for (let j = i + 1; j < stars.length && connectionsCount < maxConnectionsPerStar; j++) {
-        const dx = stars[i].x - stars[j].x;
-        const dy = stars[i].y - stars[j].y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        
-        if (dist < connectionDistance) {
-          ctx.beginPath();
-          ctx.moveTo(stars[i].x, stars[i].y);
-          ctx.lineTo(stars[j].x, stars[j].y);
-          ctx.stroke();
-          connectionsCount++;
+    function draw() {
+      ctx.clearRect(0, 0, width, height);
+      ctx.strokeStyle = 'rgba(0, 240, 255, 0.1)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i < stars.length; i++) {
+        let links = 0;
+        for (let j = i + 1; j < stars.length && links < MAX_LINKS; j++) {
+          const dx = stars[i].x - stars[j].x;
+          const dy = stars[i].y - stars[j].y;
+          if (dx * dx + dy * dy < LINK_DIST * LINK_DIST) {
+            ctx.beginPath();
+            ctx.moveTo(stars[i].x, stars[i].y);
+            ctx.lineTo(stars[j].x, stars[j].y);
+            ctx.stroke();
+            links++;
+          }
         }
       }
+      ctx.fillStyle = '#ffffff';
+      for (const s of stars) {
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+        if (reduceMotion) continue;
+        s.x = (s.x + s.dx + width) % width;
+        s.y = (s.y + s.dy + height) % height;
+      }
+      if (!reduceMotion) requestAnimationFrame(draw);
     }
 
-    // Draw stars
-    ctx.fillStyle = '#ffffff';
-    stars.forEach(s => {
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      ctx.fill();
-      
-      s.x += s.dx;
-      s.y += s.dy;
-      if (s.x < 0) s.x = width;
-      if (s.x > width) s.x = 0;
-      if (s.y < 0) s.y = height;
-      if (s.y > height) s.y = 0;
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => { setup(); if (reduceMotion) draw(); }, 250);
     });
-
-    requestAnimationFrame(drawStars);
+    setup();
+    draw();
   }
 
-  initCanvas();
-  drawStars();
-  
-  // Debounce resize event
-  let resizeTimeout;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(initCanvas, 250);
-  });
-}
-
-// Reveal animation on scroll
-function initScrollReveal() {
-  const revealElements = document.querySelectorAll('.reveal');
-  
-  if (revealElements.length === 0) return;
-  
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('show');
-      }
-    });
-  }, { 
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-  });
-
-  revealElements.forEach(el => revealObserver.observe(el));
-}
-
-// Mobile menu toggle
-function initMobileMenu() {
-  const menuBtn = document.getElementById('mobileMenuBtn');
-  const mobileMenu = document.getElementById('mobileMenu');
-  
-  if (menuBtn && mobileMenu) {
-    menuBtn.addEventListener('click', () => {
-      mobileMenu.classList.toggle('hidden');
-    });
-    
-    // Close menu when clicking outside
-    document.addEventListener('click', (e) => {
-      if (!menuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
-        mobileMenu.classList.add('hidden');
-      }
-    });
-    
-    // Close menu when clicking a link
-    const menuLinks = mobileMenu.querySelectorAll('a');
-    menuLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        mobileMenu.classList.add('hidden');
+  /* ---------------- Scroll reveal ---------------- */
+  let revealObserver = null;
+  function observeReveals() {
+    if (!('IntersectionObserver' in window)) {
+      document.querySelectorAll('.reveal').forEach((el) => el.classList.add('show'));
+      return;
+    }
+    revealObserver = revealObserver || new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('show');
+          revealObserver.unobserve(entry.target);
+        }
       });
-    });
+    }, { threshold: 0, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal:not(.show)').forEach((el) => revealObserver.observe(el));
   }
-}
 
-// Print CV (remove navbar before printing)
-function setupPrintCV() {
-  // Add print button if on CV page
-  const cvPage = document.querySelector('.cv-page');
-  if (cvPage) {
-    window.addEventListener('beforeprint', () => {
-      document.querySelector('nav')?.classList.add('no-print');
-    });
-    
-    window.addEventListener('afterprint', () => {
-      document.querySelector('nav')?.classList.remove('no-print');
-    });
-  }
-}
-
-// Initialize all utilities
-function initPortfolio() {
+  /* ---------------- Boot ---------------- */
+  renderChrome();
+  const setMenuOpen = initMobileMenu();
   initStarfield();
-  initScrollReveal();
-  initMobileMenu();
-  setupPrintCV();
-  
-  // Load profile images if on home page
-  if (document.querySelector('.avatar-container')) {
-    initProfileAvatar();
-  }
-}
+  wireModals();
+  observeReveals();
 
-// Run when DOM is ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initPortfolio);
-} else {
-  initPortfolio();
-}
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    const open = [...document.querySelectorAll('.modal.is-open')].pop();
+    if (open) closeModal(open);
+    else setMenuOpen(false);
+  });
+
+  window.Site = {
+    ROOT, PAGE, $, esc, norm, asset, isLink, dateValue, yearOf, prettyDate, byNewest,
+    imgFrame, tagList, tagChips, openModal, closeModal, wireModals, hashRoute,
+    renderStatsChart, observeReveals
+  };
+})();
