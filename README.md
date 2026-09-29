@@ -332,6 +332,6 @@ Personal portfolio - all rights reserved
 ---
 
 **Built by Osama Al-Rawahi**
-- Email: s13234@squ.edu.om
+- Email: osama.mohd.alrawahi@gmail.com
 - GitHub: github.com/osama-alrawahi
 - LinkedIn: linkedin.com/in/osama-al-rawahi-06651a287
